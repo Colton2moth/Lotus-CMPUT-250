@@ -11,8 +11,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float movementSpeed = 7f;
     [SerializeField] private float gravity = -20f;
     [SerializeField] private float jumpHeight = 1.8f;
+    [SerializeField] private float jumpBufferTime = 0.15f;
     [SerializeField] public float coyoteTime = 0.2f;
     private float coyoteTimeCounter;
+    private float jumpBufferCounter;
+    float verticalVelocity;
 
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private Transform visualTransform;
@@ -25,7 +28,7 @@ public class PlayerController : MonoBehaviour
     //How do I slow down? Damping. velocity * 0.95; is usually how to do damping
     //How to limit speed? watch youtube video, clamping is not always enough
     //Air movement: air should be lsipperier (less damping).
-    float verticalVelocity;
+    
 
     void Start()
     {
@@ -45,6 +48,15 @@ public class PlayerController : MonoBehaviour
         }
         else {
             coyoteTimeCounter -= Time.deltaTime;
+        }
+
+        if (jumpBufferCounter > 0f)
+        {
+            jumpBufferCounter -= Time.deltaTime;
+        }
+
+        if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f) {
+            ExecuteJump();
         }
     }
 
@@ -119,10 +131,12 @@ public class PlayerController : MonoBehaviour
 
     public void Jump()
     {
-        if (coyoteTimeCounter > 0f)
-        {
-            verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            coyoteTimeCounter = 0;
-        }
+        jumpBufferCounter = jumpBufferTime;
+    }
+
+    public void ExecuteJump() {
+        verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        coyoteTimeCounter = 0;
+        jumpBufferCounter = 0;
     }
 }

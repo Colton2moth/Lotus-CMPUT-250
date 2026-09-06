@@ -163,4 +163,11 @@ public class PlayerController : MonoBehaviour
         coyoteTimeCounter = 0;
         jumpBufferCounter = 0;
     }
+
+    public void JumpCancelled()
+    {
+        if (verticalVelocity > 0f) {
+            verticalVelocity *= 0.5f;
+        }
+    }
 }

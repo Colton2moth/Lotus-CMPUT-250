@@ -26,8 +26,17 @@ public class InputHandler : MonoBehaviour
         Vector2 inputVector = move != null ? move.ReadValue<Vector2>() : Vector2.zero;
         playerController.Move(inputVector);
 
-        if (jump != null && jump.WasPressedThisFrame()) {
-            playerController.Jump();
+        if (jump != null) {
+
+            if (jump.WasPressedThisFrame())
+            {
+                playerController.Jump();
+            }
+            else if (jump.WasReleasedThisFrame()) 
+            {
+                playerController.JumpCancelled();
+            }
         }
     }
+
 }

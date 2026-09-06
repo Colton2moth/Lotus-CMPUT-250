@@ -31,13 +31,29 @@ public class PlayerController : MonoBehaviour
     //How to limit speed? watch youtube video, clamping is not always enough
     //Air movement: air should be lsipperier (less damping).
 
-    /*
-        https://www.youtube.com/watch?v=NsSk58un8E0&t - Beans - video for Advanced Movement Shooter Physics. Used in movement scripts.
-        https://www.youtube.com/watch?v=z3dequX5g_E - Semikoder - Video for character controller.
-        https://www.youtube.com/watch?v=SsckrYYxcuM - Dave / GameDevelopment - Sliding (modified slightly) but useful nonetheless.
-        https://www.youtube.com/watch?v=K1xZ-rycYY8&t=3s - Bendux - Input system stuff, variable jump height
-
-    prolly go back here to revamp the descriptions but heres the credits and sources for now.
+    /*  Videos:
+     *  https://www.youtube.com/watch?v=XtQMytORBmM&t=240s - Game Maker's Toolkit - Engine basics, Unity hierarchy, component architecture.
+     *  https://www.youtube.com/watch?v=T2T82MWbbew&t=296s - Tvtig - CharacterController setup, Input System decoupling, LateUpdate camera follow.
+     *  https://www.youtube.com/watch?v=NsSk58un8E0&t - Beans - video for Advanced Movement Shooter Physics. Mostly used for velocity handling and sliding.
+     *  https://www.youtube.com/watch?v=z3dequX5g_E - Semikoder - CharacterController grounding and motion pipeline.
+     *  https://www.youtube.com/watch?v=SsckrYYxcuM - Dave / GameDevelopment - Slope sliding vectors and normal projections.
+     *  https://www.youtube.com/watch?v=K1xZ-rycYY8&t=3s - Bendux - New Input System callbacks, variable jump height.
+     *  https://www.youtube.com/watch?v=fJyi7l2tWKo - LlamAcademy - Raycasts, layermasks etc. 
+     *  
+     *  Documentation:
+     *  https://docs.unity3d.com/2022.3/Documentation/Manual/index.html - Unity Documentation.
+     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/index.html - Scripting Documentation.
+     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/CharacterController.html - Character Controller specific page.
+     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Quaternion.html - Quaternion specific page.
+     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html - SpriteRenderer specific page.
+     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/CollisionFlags.html - Collision Flags specific page.
+     *  https://docs.unity3d.com/6000.5/Documentation/ScriptReference/Mathf.html - Mathf specific page.
+     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Physics.html - Physics specific page.
+     *  - https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Physics.Raycast.html - Physics.Raycast specific page.
+     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Vector2.html - Vector 2 specific page.
+     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Vector3.html - Vector 3 specific page.
+     *  
+     *  prolly go back here to revamp the descriptions but heres the credits and sources for now.
      */
 
     void Start()

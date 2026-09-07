@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Windows;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : AnimatedEntity
 {
     private CharacterController characterController;
 
@@ -20,8 +20,19 @@ public class PlayerController : MonoBehaviour
     private Vector3 horizontalVelocity;
 
     [SerializeField] private Transform cameraTransform;
-    [SerializeField] private Transform visualTransform;
-    [SerializeField] private SpriteRenderer spriteRenderer;
+
+    public List<Sprite> idleFront;
+    public List<Sprite> idleBack;
+    public List<Sprite> idleSide;
+    public List<Sprite> walkFront;
+    public List<Sprite> walkBack;
+    public List<Sprite> walkSide;
+    public List<Sprite> jumpFront;
+    public List<Sprite> jumpBack;
+    public List<Sprite> jumpSide;
+
+    private int facingDirection = 0; // 0 is front, 1 is back, 2 is side
+
 
     // Add Coyote time, and Jump buffering, Responsiveness, Fluidity.
     // Add head hitters (hitting your head on a jump forces you to go down instead of floating there.
@@ -64,10 +75,15 @@ public class PlayerController : MonoBehaviour
         {
             cameraTransform = Camera.main.transform;
         }
+
+        DefaultAnimationCycle = idleFront;
+        base.AnimationSetup();
     }
 
     private void Update()
     {
+        base.AnimationUpdate();
+
         if (characterController.isGrounded && verticalVelocity <= 0f)
         {
             coyoteTimeCounter = coyoteTime;
@@ -118,31 +134,24 @@ public class PlayerController : MonoBehaviour
 
         horizontalVelocity = moveDirection * movementSpeed;
 
-        Transform targetVisual = visualTransform != null ? visualTransform : transform;
-
         // keeps the sprite/model facing the last moved direction.
         if (input.sqrMagnitude > 0.01f)
         {
-            Vector3 targetFacing;
 
-            if (Mathf.Abs(input.y) >= Mathf.Abs(input.x))
-            {
-                targetFacing = input.y > 0 ? camForward : -camForward;
-            }
-            else
-            {
-                targetFacing = input.x > 0 ? camRight : -camRight;
-            }
+            UpdateSpriteFacing(input);
 
-            targetVisual.rotation = Quaternion.LookRotation(targetFacing);
-
-            if (spriteRenderer != null)
-            {
-                UpdateSpriteFacing(input);
-            }
+            if (facingDirection == 0) DefaultAnimationCycle = walkFront;
+            else if (facingDirection == 1) DefaultAnimationCycle = walkBack;
+            else if (facingDirection == 2) DefaultAnimationCycle = walkSide;
+        }
+        else 
+        {
+            if (facingDirection == 0) DefaultAnimationCycle = idleFront;
+            else if (facingDirection == 1) DefaultAnimationCycle = idleBack;
+            else if (facingDirection == 2) DefaultAnimationCycle = idleSide;
         }
 
-        Vector3 motion = horizontalVelocity + (Vector3.up * verticalVelocity);
+            Vector3 motion = horizontalVelocity + (Vector3.up * verticalVelocity);
         characterController.Move(motion * Time.deltaTime);
     }
 
@@ -150,21 +159,20 @@ public class PlayerController : MonoBehaviour
     {
         if (Mathf.Abs(input.y) >= Mathf.Abs(input.x))
         {
-            spriteRenderer.flipX = false;
+            SpriteRenderer.flipX = false;
             if (input.y > 0)
             {
-                // face back
+                facingDirection = 1;
             }
             else
             {
-                // face forward
+                facingDirection = 0;
             }
         }
         else
         {
-            spriteRenderer.flipX = (input.x < 0);
-
-            // flip left/right
+            facingDirection = 2;
+            SpriteRenderer.flipX = (input.x < 0);
         }
     }
 

@@ -10,28 +10,34 @@ public class InputHandler : MonoBehaviour
     [SerializeField] private PlayerController playerController;
 
     private InputAction move, jump;
-    // Start is called before the first frame update
     void Start()
     {
+        // Locate and bind the Move and Jump actions from the active Input System asset
         move = InputSystem.actions.FindAction("Move");
         jump = InputSystem.actions.FindAction("Jump");
 
+        // Hides cursor and locks it when in game
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    // Update is called once per frame
     void Update()
     {
+        // Read 2D directional input, defaults to 0 if action is missing
         Vector2 inputVector = move != null ? move.ReadValue<Vector2>() : Vector2.zero;
+
+        // send input vector to the player physics controller each frame
         playerController.Move(inputVector);
 
         if (jump != null) {
 
+            // Initial press trigger jump input buffering
             if (jump.WasPressedThisFrame())
             {
                 playerController.Jump();
             }
+
+            // Release allows for variable jump heights (see bottom of playerController)
             else if (jump.WasReleasedThisFrame()) 
             {
                 playerController.JumpCancelled();

@@ -4,18 +4,23 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Windows;
 
+// Controls player movement, jump physics, coyote time, jump buffering, etc.
+// Also passes motion and directional data to CharacterAnimator.cs
 public class PlayerController : MonoBehaviour
 {
     private CharacterController characterController;
     [SerializeField] private CharacterAnimator characterAnimator;
     [SerializeField] private Transform cameraTransform;
 
+    [Header("Movement Settings")]
     [SerializeField] private float movementSpeed = 7f;
     [SerializeField] private float gravity = -50f;
     [SerializeField] private float jumpForce = 15f;
+
+    [Header("Movement Tuning")]
     [SerializeField] private float jumpBufferTime = 0.15f;
     [SerializeField] public float coyoteTime = 0.2f;
-
+    
     private float coyoteTimeCounter;
     private float jumpBufferCounter;
     private float verticalVelocity;
@@ -59,13 +64,16 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        // Grab the CharacterController component attached to this GameObject
         characterController = GetComponent<CharacterController>();
 
+        // default to main scene camera if none is assigned in the inspector
         if (cameraTransform == null && Camera.main != null)
         {
             cameraTransform = Camera.main.transform;
         }
 
+        // Look for CharacterAnimator on this object or child 
         if (characterAnimator == null) 
         {
             characterAnimator = GetComponentInChildren<CharacterAnimator>();
@@ -74,7 +82,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-
+        // Checks ground and resets coyote timer otherwise count down the timer
         if (characterController.isGrounded && verticalVelocity <= 0f)
         {
             coyoteTimeCounter = coyoteTime;
@@ -84,19 +92,23 @@ public class PlayerController : MonoBehaviour
             coyoteTimeCounter -= Time.deltaTime;
         }
 
+        // count down jump input buffer timer
         if (jumpBufferCounter > 0f)
         {
             jumpBufferCounter -= Time.deltaTime;
         }
 
+        // Do a jump if coyote time and jump buffer timer is active
         if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
         {
             ExecuteJump();
         }
     }
 
+    // Movement calculations, collisions, animation states, etc.
     public void Move(Vector2 input)
     {
+        // flatten camera direction to ignore pitch/tilt
         Vector3 camForward = cameraTransform.forward;
         Vector3 camRight = cameraTransform.right;
 
@@ -105,6 +117,7 @@ public class PlayerController : MonoBehaviour
         camForward.Normalize();
         camRight.Normalize();
 
+        // calculate move direction relative to where the camera is facing
         Vector3 moveDirection = (camForward * input.y + camRight * input.x).normalized;
 
         // headhitting, basically applies -2 vertical velocity (falling down speed) if head touches anything
@@ -113,7 +126,7 @@ public class PlayerController : MonoBehaviour
             verticalVelocity = -2f;
         }
 
-        // if on ground and vertical velocity is less than o (which it is if grounded because -2) then apply the -2 sticking force
+        // if on ground and vertical velocity is less than 0 (which it is if grounded because -2) then apply the -2 sticking force
         if (characterController.isGrounded && verticalVelocity < 0)
         {
             verticalVelocity = -2f;
@@ -125,28 +138,34 @@ public class PlayerController : MonoBehaviour
 
         horizontalVelocity = moveDirection * movementSpeed;
 
+        // feed data into the CharacterAnimator script
         if (characterAnimator != null) 
         {
+            // Update facing direction when input is active, 0.01 so player faces last moved direction
             if (input.sqrMagnitude > 0.01f) {
 
                 characterAnimator.UpdateFacing(input);
             }
 
+            // Switch between walking and idle while on the ground
             if (characterController.isGrounded) 
             {
                 characterAnimator.SetMoving(input.sqrMagnitude > 0.01f);
             }
         }
 
+        // Combine horizontal motion and vertical velocity, then apply via CharacterController
         Vector3 motion = horizontalVelocity + (Vector3.up * verticalVelocity);
         characterController.Move(motion * Time.deltaTime);
     }
 
+    // buffers jump input, called when player presses jump
     public void Jump()
     {
         jumpBufferCounter = jumpBufferTime;
     }
 
+    // does the jump and triggers jump animation
     public void ExecuteJump()
     {
         verticalVelocity = jumpForce;
@@ -156,6 +175,7 @@ public class PlayerController : MonoBehaviour
         characterAnimator.TriggerJump();
     }
 
+    // Variable jump height.
     public void JumpCancelled()
     {
         if (verticalVelocity > 0f) {

@@ -10746,13 +10746,13 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 2
+  m_Height: 1.6
   m_Radius: 0.35
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: -0.1, z: 0}
 --- !u!114 &933777710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10778,39 +10778,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bc06091a32820041beb11c934046bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultAnimationCycle: []
-  Framerate: 12
-  SpriteRenderer: {fileID: 2050184283}
+  characterAnimator: {fileID: 2050184284}
+  cameraTransform: {fileID: 963194228}
   movementSpeed: 7
   gravity: -50
   jumpForce: 15
   jumpBufferTime: 0.15
   coyoteTime: 0.2
-  cameraTransform: {fileID: 963194228}
-  idleFront:
-  - {fileID: -1690034479, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-  idleBack:
-  - {fileID: -419963700, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-  idleSide:
-  - {fileID: 123565894, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-  walkFront:
-  - {fileID: -121354367, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-  - {fileID: -1690034479, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-  - {fileID: 1988358121, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-  walkBack:
-  - {fileID: -1722096508, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-  - {fileID: -419963700, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-  - {fileID: -1082533456, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-  walkSide:
-  - {fileID: 123565894, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-  - {fileID: 1502595780, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-  - {fileID: -1334758311, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-  jumpFront:
-  - {fileID: -1690034479, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-  jumpBack:
-  - {fileID: -419963700, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-  jumpSide:
-  - {fileID: 1502595780, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
 --- !u!4 &933777712
 Transform:
   m_ObjectHideFlags: 0
@@ -22980,6 +22954,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2050184282}
   - component: {fileID: 2050184283}
+  - component: {fileID: 2050184284}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -23054,6 +23029,48 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2050184284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2050184281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7da34c056ecc814f8fa374bdedf5832, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DefaultAnimationCycle: []
+  Framerate: 12
+  SpriteRenderer: {fileID: 2050184283}
+  idle:
+    front:
+    - {fileID: -1690034479, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    back:
+    - {fileID: -419963700, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    side:
+    - {fileID: 1502595780, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+  walk:
+    front:
+    - {fileID: -121354367, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    - {fileID: -1690034479, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    - {fileID: 1988358121, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    back:
+    - {fileID: -1722096508, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    - {fileID: -419963700, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    - {fileID: -1082533456, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    side:
+    - {fileID: 123565894, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    - {fileID: 1502595780, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    - {fileID: -1334758311, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+  jump:
+    front:
+    - {fileID: -1690034479, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    back:
+    - {fileID: -419963700, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    side:
+    - {fileID: 1502595780, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
 --- !u!43 &2088630102
 Mesh:
   m_ObjectHideFlags: 0

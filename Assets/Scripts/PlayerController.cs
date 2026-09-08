@@ -4,9 +4,11 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Windows;
 
-public class PlayerController : AnimatedEntity
+public class PlayerController : MonoBehaviour
 {
     private CharacterController characterController;
+    [SerializeField] private CharacterAnimator characterAnimator;
+    [SerializeField] private Transform cameraTransform;
 
     [SerializeField] private float movementSpeed = 7f;
     [SerializeField] private float gravity = -50f;
@@ -19,19 +21,7 @@ public class PlayerController : AnimatedEntity
     private float verticalVelocity;
     private Vector3 horizontalVelocity;
 
-    [SerializeField] private Transform cameraTransform;
-
-    public List<Sprite> idleFront;
-    public List<Sprite> idleBack;
-    public List<Sprite> idleSide;
-    public List<Sprite> walkFront;
-    public List<Sprite> walkBack;
-    public List<Sprite> walkSide;
-    public List<Sprite> jumpFront;
-    public List<Sprite> jumpBack;
-    public List<Sprite> jumpSide;
-
-    private int facingDirection = 0; // 0 is front, 1 is back, 2 is side
+    
 
 
     // Add Coyote time, and Jump buffering, Responsiveness, Fluidity.
@@ -76,13 +66,14 @@ public class PlayerController : AnimatedEntity
             cameraTransform = Camera.main.transform;
         }
 
-        DefaultAnimationCycle = idleFront;
-        base.AnimationSetup();
+        if (characterAnimator == null) 
+        {
+            characterAnimator = GetComponentInChildren<CharacterAnimator>();
+        }
     }
 
     private void Update()
     {
-        base.AnimationUpdate();
 
         if (characterController.isGrounded && verticalVelocity <= 0f)
         {
@@ -134,46 +125,21 @@ public class PlayerController : AnimatedEntity
 
         horizontalVelocity = moveDirection * movementSpeed;
 
-        // keeps the sprite/model facing the last moved direction.
-        if (input.sqrMagnitude > 0.01f)
+        if (characterAnimator != null) 
         {
+            if (input.sqrMagnitude > 0.01f) {
 
-            UpdateSpriteFacing(input);
+                characterAnimator.UpdateFacing(input);
+            }
 
-            if (facingDirection == 0) DefaultAnimationCycle = walkFront;
-            else if (facingDirection == 1) DefaultAnimationCycle = walkBack;
-            else if (facingDirection == 2) DefaultAnimationCycle = walkSide;
-        }
-        else 
-        {
-            if (facingDirection == 0) DefaultAnimationCycle = idleFront;
-            else if (facingDirection == 1) DefaultAnimationCycle = idleBack;
-            else if (facingDirection == 2) DefaultAnimationCycle = idleSide;
+            if (characterController.isGrounded) 
+            {
+                characterAnimator.SetMoving(input.sqrMagnitude > 0.01f);
+            }
         }
 
-            Vector3 motion = horizontalVelocity + (Vector3.up * verticalVelocity);
+        Vector3 motion = horizontalVelocity + (Vector3.up * verticalVelocity);
         characterController.Move(motion * Time.deltaTime);
-    }
-
-    private void UpdateSpriteFacing(Vector2 input)
-    {
-        if (Mathf.Abs(input.y) >= Mathf.Abs(input.x))
-        {
-            SpriteRenderer.flipX = false;
-            if (input.y > 0)
-            {
-                facingDirection = 1;
-            }
-            else
-            {
-                facingDirection = 0;
-            }
-        }
-        else
-        {
-            facingDirection = 2;
-            SpriteRenderer.flipX = (input.x < 0);
-        }
     }
 
     public void Jump()
@@ -186,6 +152,8 @@ public class PlayerController : AnimatedEntity
         verticalVelocity = jumpForce;
         coyoteTimeCounter = 0;
         jumpBufferCounter = 0;
+
+        characterAnimator.TriggerJump();
     }
 
     public void JumpCancelled()

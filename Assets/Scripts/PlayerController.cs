@@ -13,9 +13,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform cameraTransform;
 
     [Header("Movement Settings")]
-    [SerializeField] private float movementSpeed = 7f;
+    [SerializeField] private float movementSpeed = 7f; // Max Speed Cap now?
     [SerializeField] private float gravity = -50f;
     [SerializeField] private float jumpForce = 15f;
+
+    [Header("Inertia & Acceleration")]
+    [SerializeField] private float groundAcceleration = 14f;
+    [SerializeField] private float groundDeceleration = 18f;
+    [SerializeField] private float airAcceleration = 7f;
+    [SerializeField] private float airDeceleration = 2f;
 
     [Header("Movement Tuning")]
     [SerializeField] private float jumpBufferTime = 0.15f;

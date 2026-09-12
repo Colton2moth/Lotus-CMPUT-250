@@ -18,10 +18,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpForce = 15f;
 
     [Header("Inertia & Acceleration")]
-    [SerializeField] private float groundAcceleration = 14f;
-    [SerializeField] private float groundDeceleration = 18f;
-    [SerializeField] private float airAcceleration = 7f;
-    [SerializeField] private float airDeceleration = 2f;
+    [SerializeField] private float groundAcceleration = 40f;
+    [SerializeField] private float groundDeceleration = 55f;
+    [SerializeField] private float airAcceleration = 20f;
+    [SerializeField] private float airDeceleration = 6f; 
 
     [Header("Movement Tuning")]
     [SerializeField] private float jumpBufferTime = 0.15f;
@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
     private float verticalVelocity;
     private Vector3 horizontalVelocity;
 
-    
+
 
 
     // Add Coyote time, and Jump buffering, Responsiveness, Fluidity.
@@ -64,9 +64,12 @@ public class PlayerController : MonoBehaviour
      *  - https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Physics.Raycast.html - Physics.Raycast specific page.
      *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Vector2.html - Vector 2 specific page.
      *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Vector3.html - Vector 3 specific page.
+     *  - https://docs.unity3d.com/6000.5/Documentation/ScriptReference/Vector3.MoveTowards.html - Vector3.moveTowards specific page.
      *  
      *  prolly go back here to revamp the descriptions but heres the credits and sources for now.
      */
+
+    // Make momentum 0 when you hit a wall (in the respective direction) 
 
     void Start()
     {
@@ -139,13 +142,32 @@ public class PlayerController : MonoBehaviour
         }
         else // normal otherwise
         {
-            verticalVelocity += gravity * Time.deltaTime;
+            //if (UnityEngine.InputSystem.Keyboard.current.spaceKey.isPressed && verticalVelocity < 0f) 
+            //{
+            //        verticalVelocity = 4f;
+            //}
+            //else
+            {
+                    verticalVelocity += gravity * Time.deltaTime;
+            }
         }
 
-        horizontalVelocity = moveDirection * movementSpeed;
+        Vector3 targetVelocity = moveDirection * movementSpeed;
+
+        float rate;
+        if (characterController.isGrounded)
+        {
+            rate = (input.sqrMagnitude > 0.01f) ? groundAcceleration : groundDeceleration;
+        }
+        else
+        {
+            rate = (input.sqrMagnitude > 0.01f) ? airAcceleration : airDeceleration;
+        }
+
+        horizontalVelocity = Vector3.MoveTowards(horizontalVelocity, targetVelocity, rate * Time.deltaTime);
 
         // feed data into the CharacterAnimator script
-        if (characterAnimator != null) 
+        if (characterAnimator != null)
         {
             // Update facing direction when input is active, 0.01 so player faces last moved direction
             if (input.sqrMagnitude > 0.01f) {
@@ -154,7 +176,7 @@ public class PlayerController : MonoBehaviour
             }
 
             // Switch between walking and idle while on the ground
-            if (characterController.isGrounded) 
+            if (characterController.isGrounded)
             {
                 characterAnimator.SetMoving(input.sqrMagnitude > 0.01f);
             }
@@ -187,5 +209,17 @@ public class PlayerController : MonoBehaviour
         if (verticalVelocity > 0f) {
             verticalVelocity *= 0.5f;
         }
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.normal.y < 0.7f && hit.normal.y > -0.7f) 
+        {
+            if (Vector3.Dot(horizontalVelocity, hit.normal) < 0f) 
+            {
+                horizontalVelocity = Vector3.ProjectOnPlane(horizontalVelocity, hit.normal);
+            }
+        }
+
     }
 }

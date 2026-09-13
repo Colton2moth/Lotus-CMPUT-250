@@ -13161,7 +13161,7 @@ MonoBehaviour:
   jumpForce: 15
   groundAcceleration: 40
   groundDeceleration: 40
-  airAcceleration: 20
+  airAcceleration: 25
   airDeceleration: 6
   jumpBufferTime: 0.15
   coyoteTime: 0.1

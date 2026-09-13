@@ -19,8 +19,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Inertia & Acceleration")]
     [SerializeField] private float groundAcceleration = 40f;
-    [SerializeField] private float groundDeceleration = 55f;
-    [SerializeField] private float airAcceleration = 20f;
+    [SerializeField] private float groundDeceleration = 40f;
+    [SerializeField] private float airAcceleration = 25f;
     [SerializeField] private float airDeceleration = 6f; 
 
     [Header("Movement Tuning")]
@@ -157,6 +157,7 @@ public class PlayerController : MonoBehaviour
         float rate;
         if (characterController.isGrounded)
         {
+            // if Player is moving then player speed increases by groundAcceleration otherwise it decreases by groundDeceleration
             rate = (input.sqrMagnitude > 0.01f) ? groundAcceleration : groundDeceleration;
         }
         else
@@ -211,12 +212,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // Sets momentum that goes into the wall.
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
+        // Makes it so only steep walls or vertical walls or overhang walls will set perpendicular momentum to 0
         if (hit.normal.y < 0.7f && hit.normal.y > -0.7f) 
         {
+            // Dot product to see if theres momentum going into the wall
             if (Vector3.Dot(horizontalVelocity, hit.normal) < 0f) 
             {
+                // Remove momentum going into the wall
                 horizontalVelocity = Vector3.ProjectOnPlane(horizontalVelocity, hit.normal);
             }
         }

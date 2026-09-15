@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -31,6 +32,8 @@ public class PlayerController : MonoBehaviour
     private float jumpBufferCounter;
     private float verticalVelocity;
     private Vector3 horizontalVelocity;
+
+    public Boolean canMove = true;
 
 
 
@@ -108,7 +111,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Do a jump if coyote time and jump buffer timer is active
-        if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
+        if (canMove && coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
         {
             ExecuteJump();
         }
@@ -117,6 +120,12 @@ public class PlayerController : MonoBehaviour
     // Movement calculations, collisions, animation states, etc.
     public void Move(Vector2 input)
     {
+        // Prevents movement when in dialogue
+        if (!canMove)
+        {
+            input = Vector3.zero;
+        }
+
         // flatten camera direction to ignore pitch/tilt
         Vector3 camForward = cameraTransform.forward;
         Vector3 camRight = cameraTransform.right;
@@ -191,6 +200,8 @@ public class PlayerController : MonoBehaviour
     // buffers jump input, called when player presses jump
     public void Jump()
     {
+        if (!canMove) return;
+
         jumpBufferCounter = jumpBufferTime;
     }
 

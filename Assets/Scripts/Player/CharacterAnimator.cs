@@ -48,7 +48,6 @@ public class CharacterAnimator : AnimatedEntity
         //prioritizes Front facing and back facing actions 
         if (Mathf.Abs(input.y) >= Mathf.Abs(input.x))
         {
-            SpriteRenderer.flipX = false;
             currentFacing = input.y > 0 ? 1 : 0;
         }
         else

@@ -4,8 +4,13 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Windows;
 
-// Controls player movement, jump physics, coyote time, jump buffering, etc.
-// Also passes motion and directional data to CharacterAnimator.cs
+/**
+ * Handles basic kinematic player movement, jumping physics, and input smoothing.
+ * 
+ * Includes coyote time and jump buffering so jumping feels responsive rather than strict.
+ * Movement direction is calculated relative to where the camera is facing on the XZ plane.
+ * Also handles air vs ground acceleration and sends facing/walking data to CharacterAnimator.
+ */
 public class PlayerController : MonoBehaviour
 {
     private CharacterController characterController;
@@ -21,56 +26,20 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float groundAcceleration = 40f;
     [SerializeField] private float groundDeceleration = 40f;
     [SerializeField] private float airAcceleration = 25f;
-    [SerializeField] private float airDeceleration = 6f; 
+    [SerializeField] private float airDeceleration = 6f;
 
     [Header("Movement Tuning")]
     [SerializeField] private float jumpBufferTime = 0.15f;
-    [SerializeField] public float coyoteTime = 0.2f;
-    
+    [SerializeField] public float coyoteTime = 0.1f;
+
     private float coyoteTimeCounter;
     private float jumpBufferCounter;
     private float verticalVelocity;
     private Vector3 horizontalVelocity;
 
-
-
-
-    // Add Coyote time, and Jump buffering, Responsiveness, Fluidity.
-    // Add head hitters (hitting your head on a jump forces you to go down instead of floating there.
-    // Better player hitbox (Not capsule so your player doesnt slide on ledges when you are on the edge of your hitbox.
-    // Acceleration on the XZ axis: move keys add to velocity on XZ).
-    //How do I slow down? Damping. velocity * 0.95; is usually how to do damping
-    //How to limit speed? watch youtube video, clamping is not always enough
-    //Air movement: air should be lsipperier (less damping).
-
-    /*  Videos:
-     *  https://www.youtube.com/watch?v=XtQMytORBmM&t=240s - Game Maker's Toolkit - Engine basics, Unity hierarchy, component architecture.
-     *  https://www.youtube.com/watch?v=T2T82MWbbew&t=296s - Tvtig - CharacterController setup, Input System decoupling, LateUpdate camera follow.
-     *  https://www.youtube.com/watch?v=NsSk58un8E0&t - Beans - video for Advanced Movement Shooter Physics. Mostly used for velocity handling and sliding.
-     *  https://www.youtube.com/watch?v=z3dequX5g_E - Semikoder - CharacterController grounding and motion pipeline.
-     *  https://www.youtube.com/watch?v=SsckrYYxcuM - Dave / GameDevelopment - Slope sliding vectors and normal projections.
-     *  https://www.youtube.com/watch?v=K1xZ-rycYY8&t=3s - Bendux - New Input System callbacks, variable jump height.
-     *  https://www.youtube.com/watch?v=fJyi7l2tWKo - LlamAcademy - Raycasts, layermasks etc. 
-     *  
-     *  Documentation:
-     *  https://docs.unity3d.com/2022.3/Documentation/Manual/index.html - Unity Documentation.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/index.html - Scripting Documentation.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/CharacterController.html - Character Controller specific page.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Quaternion.html - Quaternion specific page.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html - SpriteRenderer specific page.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/CollisionFlags.html - Collision Flags specific page.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Mathf.html - Mathf specific page.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Physics.html - Physics specific page.
-     *  - https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Physics.Raycast.html - Physics.Raycast specific page.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Vector2.html - Vector 2 specific page.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Vector3.html - Vector 3 specific page.
-     *  - https://docs.unity3d.com/6000.5/Documentation/ScriptReference/Vector3.MoveTowards.html - Vector3.moveTowards specific page.
-     *  
-     *  prolly go back here to revamp the descriptions but heres the credits and sources for now.
+    /**
+     * Grabs the CharacterController and finds fallback references for camera and animator if left unassigned.
      */
-
-    // Make momentum 0 when you hit a wall (in the respective direction) 
-
     void Start()
     {
         // Grab the CharacterController component attached to this GameObject
@@ -83,12 +52,16 @@ public class PlayerController : MonoBehaviour
         }
 
         // Look for CharacterAnimator on this object or child 
-        if (characterAnimator == null) 
+        if (characterAnimator == null)
         {
             characterAnimator = GetComponentInChildren<CharacterAnimator>();
         }
     }
 
+    /**
+     * Ticks down jump buffer and coyote time timers.
+     * If the player recently pressed jump and recently touched the ground, it runs ExecuteJump.
+     */
     private void Update()
     {
         // Checks ground and resets coyote timer otherwise count down the timer
@@ -114,7 +87,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Movement calculations, collisions, animation states, etc.
+    /**
+     * Main movement step called by the input handler.
+     * - Flattens camera angle to get forward/right directions along the ground.
+     * - Accelerates or decelerates horizontal velocity toward target velocity.
+     * - Handles gravity and pushes player down if their head hits a ceiling.
+     * - Sends movement and facing direction to the animator.
+     * @param input 2D input from WASD or left stick.
+     */
     public void Move(Vector2 input)
     {
         // flatten camera direction to ignore pitch/tilt
@@ -148,7 +128,7 @@ public class PlayerController : MonoBehaviour
             //}
             //else
             {
-                    verticalVelocity += gravity * Time.deltaTime;
+                verticalVelocity += gravity * Time.deltaTime;
             }
         }
 
@@ -171,8 +151,8 @@ public class PlayerController : MonoBehaviour
         if (characterAnimator != null)
         {
             // Update facing direction when input is active, 0.01 so player faces last moved direction
-            if (input.sqrMagnitude > 0.01f) {
-
+            if (input.sqrMagnitude > 0.01f)
+            {
                 characterAnimator.UpdateFacing(input);
             }
 
@@ -188,13 +168,17 @@ public class PlayerController : MonoBehaviour
         characterController.Move(motion * Time.deltaTime);
     }
 
-    // buffers jump input, called when player presses jump
+    /**
+     * Caches a jump request into the buffer timer. Called as soon as the jump button is hit.
+     */
     public void Jump()
     {
         jumpBufferCounter = jumpBufferTime;
     }
 
-    // does the jump and triggers jump animation
+    /**
+     * Applies vertical jump impulse and clears the timers so you can't double-jump.
+     */
     public void ExecuteJump()
     {
         verticalVelocity = jumpForce;
@@ -204,27 +188,31 @@ public class PlayerController : MonoBehaviour
         characterAnimator.TriggerJump();
     }
 
-    // Variable jump height.
+    /**
+     * Cuts upward velocity in half if jump key is released early (variable jump height).
+     */
     public void JumpCancelled()
     {
-        if (verticalVelocity > 0f) {
+        if (verticalVelocity > 0f)
+        {
             verticalVelocity *= 0.5f;
         }
     }
 
-    // Sets momentum that goes into the wall.
+    /**
+     * Removes horizontal speed moving straight into steep walls/obstacles so the player doesn't stick to them.
+     */
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         // Makes it so only steep walls or vertical walls or overhang walls will set perpendicular momentum to 0
-        if (hit.normal.y < 0.7f && hit.normal.y > -0.7f) 
+        if (hit.normal.y < 0.7f && hit.normal.y > -0.7f)
         {
             // Dot product to see if theres momentum going into the wall
-            if (Vector3.Dot(horizontalVelocity, hit.normal) < 0f) 
+            if (Vector3.Dot(horizontalVelocity, hit.normal) < 0f)
             {
                 // Remove momentum going into the wall
                 horizontalVelocity = Vector3.ProjectOnPlane(horizontalVelocity, hit.normal);
             }
         }
-
     }
 }

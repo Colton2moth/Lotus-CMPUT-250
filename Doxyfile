@@ -1,0 +1,28 @@
+# Project settings
+PROJECT_NAME           = "Lotus CMPUT 250"
+PROJECT_BRIEF          = "Player kinematics, movement, and input systems"
+OUTPUT_DIRECTORY       = "D:/Unity/Repositories/Lotus Documentation"
+GENERATE_LATEX         = NO
+GENERATE_HTML          = YES
+
+# Input settings
+INPUT                  = Assets/Scripts Sources.md
+RECURSIVE              = YES
+FILE_PATTERNS          = *.cs *.md
+
+# Parsing & Optimization for C#
+OPTIMIZE_OUTPUT_JAVA   = YES
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_STATIC         = YES
+JAVADOC_AUTOBRIEF      = YES
+
+# Source Code Inclusion
+SOURCE_BROWSER         = YES
+INLINE_SOURCES         = YES
+
+# Markdown & Presentation
+USE_MDFILE_AS_MAINPAGE = Sources.md
+MARKDOWN_SUPPORT       = YES
+HTML_OUTPUT            = html
+SEARCHENGINE           = YES

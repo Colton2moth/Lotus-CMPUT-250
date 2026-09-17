@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine.Windows;
 
 // Controls player movement, jump physics, coyote time, jump buffering, etc.
 // Also passes motion and directional data to CharacterAnimator.cs
@@ -14,7 +13,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform cameraTransform;
 
     [Header("Movement Settings")]
-    [SerializeField] private float movementSpeed = 7f; // Max Speed Cap now?
+    [SerializeField] private float maxSpeed = 7f; 
     [SerializeField] private float gravity = -50f;
     [SerializeField] private float jumpForce = 15f;
 
@@ -22,7 +21,21 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float groundAcceleration = 40f;
     [SerializeField] private float groundDeceleration = 40f;
     [SerializeField] private float airAcceleration = 25f;
-    [SerializeField] private float airDeceleration = 6f; 
+    [SerializeField] private float airDeceleration = 6f;
+
+    [Header("Surface Properties")]
+    public float surfaceFrictionMultiplier = 1f;
+
+    [Header("Flutter Jump")]
+    [SerializeField] private float flutterJumpDuration = 0.8f;
+    [SerializeField] private float flutterMaxSpeed = 3.8f;
+    [SerializeField] private float flutterAirAcceleration = 5f;
+    [SerializeField] private float flutterPower = 9f;
+    [SerializeField] private float flutterDownwardMomentumMult = 0.6f;
+
+    private float flutterTimeCounter;
+    private bool isFluttering;
+    private bool hasFluttered;
 
     [Header("Movement Tuning")]
     [SerializeField] private float jumpBufferTime = 0.15f;
@@ -33,18 +46,7 @@ public class PlayerController : MonoBehaviour
     private float verticalVelocity;
     private Vector3 horizontalVelocity;
 
-    public Boolean canMove = true;
-
-
-
-
-    // Add Coyote time, and Jump buffering, Responsiveness, Fluidity.
-    // Add head hitters (hitting your head on a jump forces you to go down instead of floating there.
-    // Better player hitbox (Not capsule so your player doesnt slide on ledges when you are on the edge of your hitbox.
-    // Acceleration on the XZ axis: move keys add to velocity on XZ).
-    //How do I slow down? Damping. velocity * 0.95; is usually how to do damping
-    //How to limit speed? watch youtube video, clamping is not always enough
-    //Air movement: air should be lsipperier (less damping).
+    public bool canMove = true;
 
     /*  Videos:
      *  https://www.youtube.com/watch?v=XtQMytORBmM&t=240s - Game Maker's Toolkit - Engine basics, Unity hierarchy, component architecture.
@@ -71,8 +73,6 @@ public class PlayerController : MonoBehaviour
      *  
      *  prolly go back here to revamp the descriptions but heres the credits and sources for now.
      */
-
-    // Make momentum 0 when you hit a wall (in the respective direction) 
 
     void Start()
     {
@@ -123,7 +123,13 @@ public class PlayerController : MonoBehaviour
         // Prevents movement when in dialogue
         if (!canMove)
         {
-            input = Vector3.zero;
+            input = Vector2.zero;
+        }
+
+        if (characterController.isGrounded)
+        {
+            hasFluttered = false;
+            isFluttering = false;
         }
 
         // flatten camera direction to ignore pitch/tilt
@@ -149,29 +155,59 @@ public class PlayerController : MonoBehaviour
         {
             verticalVelocity = -2f;
         }
-        else // normal otherwise
+        else // if in air
         {
-            //if (UnityEngine.InputSystem.Keyboard.current.spaceKey.isPressed && verticalVelocity < 0f) 
-            //{
-            //        verticalVelocity = 4f;
-            //}
-            //else
+            // if player is fluttering then decrement the timer and once it hits 0, stops fluttering
+            if (isFluttering)
             {
-                    verticalVelocity += gravity * Time.deltaTime;
+                flutterTimeCounter -= Time.deltaTime;
+                if (flutterTimeCounter <= 0)
+                {
+                    isFluttering = false;
+                }
+                else
+                {
+                    // Divides total time by total duration which gives a ratio between 1.0 to 0.0
+                    float progress = flutterTimeCounter / flutterJumpDuration;
+
+                    // at 1.0 (the start) the power of the flutterjump is max at 0.5 it is half and at 0.0 it is 0 and the -2f takes over to slowly lower the player
+                    float targetArcSpeed = Mathf.Lerp(-2f, flutterPower, progress);
+
+                    // Pull current velocity toward the arc target instead of overwriting it this allows
+                    // allowing downward momentum to resist the lift
+                    verticalVelocity = Mathf.MoveTowards(verticalVelocity, targetArcSpeed, 35f * Time.deltaTime);
+                }
             }
+            else
+            {
+                verticalVelocity += gravity * Time.deltaTime;
+            }
+                
         }
 
-        Vector3 targetVelocity = moveDirection * movementSpeed;
+        float currentMaxSpeed = isFluttering ? flutterMaxSpeed : maxSpeed;
+        Vector3 targetVelocity = moveDirection * currentMaxSpeed;
 
         float rate;
         if (characterController.isGrounded)
         {
-            // if Player is moving then player speed increases by groundAcceleration otherwise it decreases by groundDeceleration
-            rate = (input.sqrMagnitude > 0.01f) ? groundAcceleration : groundDeceleration;
+            // if Player is moving then player speed increases by effectiveAcceleration otherwise it decreases by effectiveDeceleration, surfaceFrictionMultiplier changes those (materials)
+            float effectiveAcceleration = groundAcceleration * surfaceFrictionMultiplier; 
+            float effectiveDeceleration = groundDeceleration * surfaceFrictionMultiplier;
+            rate = (input.sqrMagnitude > 0.01f) ? effectiveAcceleration : effectiveDeceleration;
         }
         else
         {
-            rate = (input.sqrMagnitude > 0.01f) ? airAcceleration : airDeceleration;
+            // if Player is fluttering then use the flutter air acceleration instead of standard air acceleration
+            if (isFluttering)
+            {
+                rate = (input.sqrMagnitude > 0.01f) ? flutterAirAcceleration : airDeceleration;
+            }
+            else
+            {
+                rate = (input.sqrMagnitude > 0.01f) ? airAcceleration : airDeceleration;
+            }
+            
         }
 
         horizontalVelocity = Vector3.MoveTowards(horizontalVelocity, targetVelocity, rate * Time.deltaTime);
@@ -202,6 +238,13 @@ public class PlayerController : MonoBehaviour
     {
         if (!canMove) return;
 
+        // if player isn't on the ground and hasn't yet fluttered this jump, execute the flutter
+        if (!characterController.isGrounded && !hasFluttered)
+        {
+            ExecuteFlutter();
+            return;
+        }
+
         jumpBufferCounter = jumpBufferTime;
     }
 
@@ -215,10 +258,42 @@ public class PlayerController : MonoBehaviour
         characterAnimator.TriggerJump();
     }
 
+    // Initiates flutter jump physics, timers, and animations
+    public void ExecuteFlutter()
+    {
+        isFluttering = true;
+        hasFluttered = true;
+        flutterTimeCounter = flutterJumpDuration;
+
+        // Keep a percentage of downwards momentum when fluttering starts
+        if (verticalVelocity < 0f)
+        {
+            verticalVelocity *= flutterDownwardMomentumMult;
+        }
+        else
+        {
+            verticalVelocity = 0f;
+        }
+
+        // maxes horizontal movement to the flutterMaxSpeed
+        horizontalVelocity = Vector3.ClampMagnitude(horizontalVelocity, flutterMaxSpeed);
+
+        //if (characterAnimator != null)
+        //{
+        //    characterAnimator.TriggerFlutter();
+        //}
+    }
+
     // Variable jump height.
     public void JumpCancelled()
     {
-        if (verticalVelocity > 0f) {
+        if (isFluttering)
+        {
+            isFluttering = false;
+        }
+
+        if (verticalVelocity > 0f)
+        {
             verticalVelocity *= 0.5f;
         }
     }

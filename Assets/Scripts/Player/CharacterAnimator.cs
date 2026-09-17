@@ -24,6 +24,7 @@ public class CharacterAnimator : AnimatedEntity
     public DirectionalAnimations idle;
     public DirectionalAnimations walk;
     public DirectionalAnimations jump;
+    // public DirectionalAnimations flutter;
 
     private int currentFacing = 0; // 0 is front, 1 is back, 2 is side.
 
@@ -68,4 +69,11 @@ public class CharacterAnimator : AnimatedEntity
         List<Sprite> jumpCycle = jump.GetList(currentFacing);
         base.Interrupt(jumpCycle);
     }
+
+    // Interrupts or sets the flutter animation cycle
+    //public void TriggerFlutter()
+    //{
+    //    List<Sprite> flutterCycle = flutter.GetList(currentFacing);
+    //    base.Interrupt(flutterCycle);
+    //}
 }

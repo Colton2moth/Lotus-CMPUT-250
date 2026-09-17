@@ -239,7 +239,7 @@ public class PlayerController : MonoBehaviour
         if (!canMove) return;
 
         // if player isn't on the ground and hasn't yet fluttered this jump, execute the flutter
-        if (!characterController.isGrounded && !hasFluttered)
+        if (!characterController.isGrounded && !hasFluttered && coyoteTimeCounter <= 0f)
         {
             ExecuteFlutter();
             return;

@@ -1,0 +1,80 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PushBlock : MonoBehaviour
+{
+    private Vector3 startPosition;
+    private Vector3 targetPosition;
+    private float stateTimer;
+    [SerializeField] private Vector3 targetDistance = new Vector3(5f, 0f, 0f);
+    [SerializeField] private float waitTimeAtStart = 1.5f;
+    [SerializeField] private float waitTimeAtEnd = 0.5f;
+    [SerializeField] private float moveTime = 1f;
+
+    private enum MoveState
+    {
+        WaitingAtStart,
+        MovingOut,
+        WaitingAtEnd,
+        MovingBack
+    };
+
+    private MoveState currentState = MoveState.WaitingAtStart;
+    // Start is called before the first frame update
+    void Start()
+    {
+        startPosition = transform.position;
+        targetPosition = startPosition + targetDistance;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        stateTimer += Time.deltaTime;
+
+        if (currentState == MoveState.WaitingAtStart){
+            if (stateTimer >= waitTimeAtStart){
+                currentState = MoveState.MovingOut;
+                stateTimer = 0f;
+            }
+        }
+
+        else if (currentState == MoveState.MovingOut){
+            float progress = stateTimer / moveTime;
+
+            transform.position = Vector3.Lerp(startPosition, targetPosition, progress);
+
+            if (progress >= 1f){
+
+                transform.position = targetPosition;
+                currentState = MoveState.WaitingAtEnd;
+                stateTimer = 0f;
+            }
+        }
+
+        
+        else if (currentState == MoveState.WaitingAtEnd)
+            {
+                if (stateTimer >= waitTimeAtEnd)
+                {
+                    currentState = MoveState.MovingBack;
+                    stateTimer = 0f;
+                }
+            }
+        
+        else if (currentState == MoveState.MovingBack)
+        {
+            float progress = stateTimer / moveTime;
+
+            transform.position = Vector3.Lerp(targetPosition, startPosition, progress);
+
+            if (progress >= 1f)
+            {
+                transform.position = startPosition;
+                currentState = MoveState.WaitingAtStart;
+                stateTimer = 0f;
+            }
+        }
+    }
+}

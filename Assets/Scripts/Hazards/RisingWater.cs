@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class RisingWater : MonoBehaviour
 {
+    //TODO: make use of allowedToMove by waiting for player to jump/move/finish talking to Lotus 
+    bool allowedToMove = true;
 
     // distance sampling is relative to this transform
     [SerializeField] Transform playerTarget;
@@ -30,6 +32,7 @@ public class RisingWater : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!allowedToMove) return;
         transform.position += Vector3.up* getCurrentRubberBandSpeed() * Time.deltaTime;
     }
 
@@ -41,4 +44,17 @@ public class RisingWater : MonoBehaviour
 
         return waterRubberBandCurve.Evaluate(curveSamplePercent) * curveMaxSpeed;
     }   
+
+
+    //We can decide later whether water is responsible for knowing about checkpoints or not, basic implemenation here
+    public void ResetMe(float yPosition)
+    {
+        // allowedToMove = false;
+        transform.position = Vector3.up * yPosition;
+    }
+
+    // public void StartMe()
+    // {
+    //     allowedToMove = true;
+    // }
 }

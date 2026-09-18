@@ -41,6 +41,8 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Tuning")]
     [SerializeField] private float jumpBufferTime = 0.15f;
     [SerializeField] public float coyoteTime = 0.2f;
+
+
     
     private float coyoteTimeCounter;
     private float jumpBufferCounter;
@@ -317,5 +319,16 @@ public class PlayerController : MonoBehaviour
         {
             ExecuteJump(boingy.boinginess);
         }
+    }
+
+    public void teleport(Vector3 position)
+    {
+        verticalVelocity = 0;
+        horizontalVelocity = Vector3.zero;
+
+        characterController.enabled = false;
+        transform.position = position;
+        characterController.enabled = true;
+
     }
 }

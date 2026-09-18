@@ -24,6 +24,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float airAcceleration = 25f;
     [SerializeField] private float airDeceleration = 6f;
 
+    [Header("Sliding")]
+    [SerializeField] private float slideMaxSpeed = 9f;
+    [SerializeField] private float slideAcceleration = 5f;
+    [SerializeField] private float slideSteerStrength = 0.4f;
+
+    private bool isTriggerSliding;
+    private Vector3 currentSlideDirection;
+
     [Header("Surface Properties")]
     public float surfaceFrictionMultiplier = 1f;
 
@@ -46,6 +54,7 @@ public class PlayerController : MonoBehaviour
     
     private float coyoteTimeCounter;
     private float jumpBufferCounter;
+
     private float verticalVelocity;
     private Vector3 horizontalVelocity;
 
@@ -120,6 +129,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // Called by SlideTrigger when entering or exiting a slide volume
+    public void SetSliding(bool sliding, Vector3 direction)
+    {
+        isTriggerSliding = sliding;
+        currentSlideDirection = direction;
+
+        if (sliding && isFluttering)
+        {
+            isFluttering = false;
+        }
+
+        if (!sliding)
+        {
+            horizontalVelocity = Vector3.ClampMagnitude(horizontalVelocity, maxSpeed);
+            if (verticalVelocity < -5f)
+            {
+                verticalVelocity = -2f;
+            }
+        }
+    }
+
     // Movement calculations, collisions, animation states, etc.
     public void Move(Vector2 input)
     {
@@ -153,10 +183,14 @@ public class PlayerController : MonoBehaviour
             verticalVelocity = -2f;
         }
 
-        // if on ground and vertical velocity is less than 0 (which it is if grounded because -2) then apply the -2 sticking force
-        if (characterController.isGrounded && verticalVelocity < 0)
+        if (isTriggerSliding)
         {
-            verticalVelocity = -2f;
+            float downFactor = currentSlideDirection.y < -0.05f ? currentSlideDirection.y : -0.7f;
+            verticalVelocity = downFactor * Mathf.Max(horizontalVelocity.magnitude, slideMaxSpeed);
+        }
+        else if (characterController.isGrounded && verticalVelocity < 0)
+        {
+            verticalVelocity = -6f;
         }
         else // if in air
         {
@@ -188,32 +222,43 @@ public class PlayerController : MonoBehaviour
                 
         }
 
-        float currentMaxSpeed = isFluttering ? flutterMaxSpeed : maxSpeed;
-        Vector3 targetVelocity = moveDirection * currentMaxSpeed;
-
-        float rate;
-        if (characterController.isGrounded)
+        if (isTriggerSliding)
         {
-            // if Player is moving then player speed increases by effectiveAcceleration otherwise it decreases by effectiveDeceleration, surfaceFrictionMultiplier changes those (materials)
-            float effectiveAcceleration = groundAcceleration * surfaceFrictionMultiplier; 
-            float effectiveDeceleration = groundDeceleration * surfaceFrictionMultiplier;
-            rate = (input.sqrMagnitude > 0.01f) ? effectiveAcceleration : effectiveDeceleration;
+            Vector3 flatSlideDir = new Vector3(currentSlideDirection.x, 0f, currentSlideDirection.z).normalized;
+            Vector3 steerVector = moveDirection * (maxSpeed * slideSteerStrength);
+
+            Vector3 targetSlideVelocity = (flatSlideDir * slideMaxSpeed) + steerVector;
+            horizontalVelocity = Vector3.MoveTowards(horizontalVelocity, targetSlideVelocity, slideAcceleration * Time.deltaTime);
         }
         else
         {
-            // if Player is fluttering then use the flutter air acceleration instead of standard air acceleration
-            if (isFluttering)
+            float currentMaxSpeed = isFluttering ? flutterMaxSpeed : maxSpeed;
+            Vector3 targetVelocity = moveDirection * currentMaxSpeed;
+
+            float rate;
+            if (characterController.isGrounded)
             {
-                rate = (input.sqrMagnitude > 0.01f) ? flutterAirAcceleration : airDeceleration;
+                // if Player is moving then player speed increases by effectiveAcceleration otherwise it decreases by effectiveDeceleration, surfaceFrictionMultiplier changes those (materials)
+                float effectiveAcceleration = groundAcceleration * surfaceFrictionMultiplier;
+                float effectiveDeceleration = groundDeceleration * surfaceFrictionMultiplier;
+                rate = (input.sqrMagnitude > 0.01f) ? effectiveAcceleration : effectiveDeceleration;
             }
             else
             {
-                rate = (input.sqrMagnitude > 0.01f) ? airAcceleration : airDeceleration;
-            }
-            
-        }
+                // if Player is fluttering then use the flutter air acceleration instead of standard air acceleration
+                if (isFluttering)
+                {
+                    rate = (input.sqrMagnitude > 0.01f) ? flutterAirAcceleration : airDeceleration;
+                }
+                else
+                {
+                    rate = (input.sqrMagnitude > 0.01f) ? airAcceleration : airDeceleration;
+                }
 
-        horizontalVelocity = Vector3.MoveTowards(horizontalVelocity, targetVelocity, rate * Time.deltaTime);
+            }
+
+            horizontalVelocity = Vector3.MoveTowards(horizontalVelocity, targetVelocity, rate * Time.deltaTime);
+        }
 
         // feed data into the CharacterAnimator script
         if (characterAnimator != null)
@@ -304,6 +349,9 @@ public class PlayerController : MonoBehaviour
     // Sets momentum that goes into the wall.
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
+
+        if (isTriggerSliding) return;
+
         // Makes it so only steep walls or vertical walls or overhang walls will set perpendicular momentum to 0
         if (hit.normal.y < 0.7f && hit.normal.y > -0.7f) 
         {

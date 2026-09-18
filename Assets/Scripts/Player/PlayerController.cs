@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 
 // Controls player movement, jump physics, coyote time, jump buffering, etc.
@@ -113,7 +114,7 @@ public class PlayerController : MonoBehaviour
         // Do a jump if coyote time and jump buffer timer is active
         if (canMove && coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
         {
-            ExecuteJump();
+            ExecuteJump(jumpForce);
         }
     }
 
@@ -249,9 +250,9 @@ public class PlayerController : MonoBehaviour
     }
 
     // does the jump and triggers jump animation
-    public void ExecuteJump()
+    public void ExecuteJump(float setJumpForce)
     {
-        verticalVelocity = jumpForce;
+        verticalVelocity = setJumpForce;
         coyoteTimeCounter = 0;
         jumpBufferCounter = 0;
 
@@ -312,5 +313,9 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if(hit.collider.TryGetComponent<OingyBoingy>(out OingyBoingy boingy))
+        {
+            ExecuteJump(boingy.boinginess);
+        }
     }
 }

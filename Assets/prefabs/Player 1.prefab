@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8984691700747372274}
   - component: {fileID: 3130227913488312462}
   - component: {fileID: 2160811033501564532}
+  - component: {fileID: 544317789505055422}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -132,6 +133,18 @@ MonoBehaviour:
     front: []
     back: []
     side: []
+--- !u!114 &544317789505055422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1513530446750294370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39b26cc06465bc64d8749ff41397ab95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5018851656261178884
 GameObject:
   m_ObjectHideFlags: 0
@@ -188,6 +201,9 @@ MonoBehaviour:
   groundDeceleration: 40
   airAcceleration: 25
   airDeceleration: 6
+  slideMaxSpeed: 9
+  slideAcceleration: 5
+  slideSteerStrength: 0.4
   surfaceFrictionMultiplier: 1
   flutterJumpDuration: 0.8
   flutterMaxSpeed: 3.8

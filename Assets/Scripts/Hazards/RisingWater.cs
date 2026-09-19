@@ -5,29 +5,21 @@ using UnityEngine;
 public class RisingWater : MonoBehaviour
 {
     //TODO: make use of allowedToMove by waiting for player to jump/move/finish talking to Lotus 
-    bool allowedToMove = true;
+    public bool allowedToMove = true;
 
     // distance sampling is relative to this transform
     [SerializeField] Transform playerTarget;
 
     //curve to sample for how fast to go
     [SerializeField] AnimationCurve waterRubberBandCurve;
-    [SerializeField] float curveMaxSpeed = 1.0f;
+    [SerializeField] float curveMaxSpeed = 3f;
+    [SerializeField] float curveMinSpeed = 0.7f;
 
     ///water rises faster when close to maxDistance 
-    [SerializeField] float maxDistance = 30;
+    [SerializeField] float maxDistance = 25;
 
     ///water rise slower when close to minDistance 
     [SerializeField] float minDistance = 3;
-
-
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     void Update()
@@ -39,10 +31,12 @@ public class RisingWater : MonoBehaviour
     float getCurrentRubberBandSpeed()
     {
         float distance = playerTarget.position.y - transform.position.y;
-        distance = Mathf.Clamp(distance,0, maxDistance);
-        float curveSamplePercent = distance/maxDistance;
+        distance = Mathf.Clamp(distance,minDistance, maxDistance);
+        float curveSamplePercent = (distance - minDistance) / (maxDistance - minDistance);
 
-        return waterRubberBandCurve.Evaluate(curveSamplePercent) * curveMaxSpeed;
+        // so it scales from min speed to max speed
+        float curveWeight = waterRubberBandCurve.Evaluate(curveSamplePercent);
+        return Mathf.Lerp(curveMinSpeed, curveMaxSpeed, curveWeight);
     }   
 
 

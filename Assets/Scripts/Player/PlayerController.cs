@@ -238,4 +238,9 @@ public class PlayerController : MonoBehaviour
         }
 
     }
+
+    public void ApplyExternalMovement(Vector3 movement)
+    {
+        characterController.Move(movement);
+    }
 }

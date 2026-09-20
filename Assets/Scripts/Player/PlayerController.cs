@@ -68,6 +68,9 @@ public class PlayerController : MonoBehaviour
      *  https://www.youtube.com/watch?v=SsckrYYxcuM - Dave / GameDevelopment - Slope sliding vectors and normal projections.
      *  https://www.youtube.com/watch?v=K1xZ-rycYY8&t=3s - Bendux - New Input System callbacks, variable jump height.
      *  https://www.youtube.com/watch?v=fJyi7l2tWKo - LlamAcademy - Raycasts, layermasks etc. 
+     *  https://www.youtube.com/watch?v=MOYiVLEnhrw  - Freya Holmér - Math for Game Devs P1 (Her entire video catalogue is especially useful)
+     *  https://www.youtube.com/watch?v=XiwEyopOMqg - Freya Holmér - Math for Game Devs P2
+     *  https://www.youtube.com/watch?v=1NLekEd770w&t - Freya Holmér -  Math for Game Devs P3
      *  
      *  Documentation:
      *  https://docs.unity3d.com/2022.3/Documentation/Manual/index.html - Unity Documentation.

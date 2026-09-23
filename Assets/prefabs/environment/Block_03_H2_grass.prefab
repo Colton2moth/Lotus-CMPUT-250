@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ad3f76dc65b03ce47887c6814725d55f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.04
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ad3f76dc65b03ce47887c6814725d55f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.01
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ad3f76dc65b03ce47887c6814725d55f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -16.26
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ad3f76dc65b03ce47887c6814725d55f, type: 3}
       propertyPath: m_LocalRotation.w
@@ -84,6 +84,6 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 7578732096110441702, guid: ad3f76dc65b03ce47887c6814725d55f, type: 3}

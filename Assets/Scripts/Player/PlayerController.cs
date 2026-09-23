@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float maxSpeed = 7f; 
     [SerializeField] private float gravity = -50f;
     [SerializeField] private float jumpForce = 15f;
+    [SerializeField] private float terminalVelocity = 16f;
 
     [Header("Inertia & Acceleration")]
     [SerializeField] private float groundAcceleration = 40f;
@@ -221,6 +222,7 @@ public class PlayerController : MonoBehaviour
             else
             {
                 verticalVelocity += gravity * Time.deltaTime;
+                verticalVelocity = Mathf.Max(verticalVelocity, terminalVelocity);
             }
                 
         }

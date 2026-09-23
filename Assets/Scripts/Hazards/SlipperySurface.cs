@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SlipperySurface : MonoBehaviour
 {
-    [SerializeField] private float iceFriction = 0.15f; // lower is more slippery
+    [SerializeField] private float iceFriction = 0.1f; // lower is more slippery
 
     // When player enters the hitbox (trigger) then check if its a player, if it is then apply iceFriction multiplier (referenced in playerController.cs)
     private void OnTriggerEnter(Collider other)

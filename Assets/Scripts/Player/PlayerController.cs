@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float maxSpeed = 7f; 
     [SerializeField] private float gravity = -50f;
     [SerializeField] private float jumpForce = 15f;
-    [SerializeField] private float terminalVelocity = 16f;
+    [SerializeField] private float terminalVelocity = -16f;
 
     [Header("Inertia & Acceleration")]
     [SerializeField] private float groundAcceleration = 40f;
@@ -354,21 +354,26 @@ public class PlayerController : MonoBehaviour
     // Sets momentum that goes into the wall.
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-
         if (isTriggerSliding) return;
 
         // Makes it so only steep walls or vertical walls or overhang walls will set perpendicular momentum to 0
-        if (hit.normal.y < 0.7f && hit.normal.y > -0.7f) 
+        if (hit.normal.y < 0.7f && hit.normal.y > -0.7f)
         {
             // Dot product to see if theres momentum going into the wall
-            if (Vector3.Dot(horizontalVelocity, hit.normal) < 0f) 
+            if (Vector3.Dot(horizontalVelocity, hit.normal) < 0f)
             {
                 // Remove momentum going into the wall
                 horizontalVelocity = Vector3.ProjectOnPlane(horizontalVelocity, hit.normal);
             }
+
+            // If falling against a steep wall, push outward slightly to break capsule friction lock
+            if (verticalVelocity < 0f)
+            {
+                horizontalVelocity += hit.normal * (0.2f * Time.deltaTime * 60f);
+            }
         }
 
-        if(hit.collider.TryGetComponent<OingyBoingy>(out OingyBoingy boingy))
+        if (hit.collider.TryGetComponent<OingyBoingy>(out OingyBoingy boingy))
         {
             ExecuteJump(boingy.boinginess);
         }
@@ -382,6 +387,11 @@ public class PlayerController : MonoBehaviour
     {
         verticalVelocity = 0;
         horizontalVelocity = Vector3.zero;
+
+        surfaceFrictionMultiplier = 1f;
+        isTriggerSliding = false;
+        isFluttering = false;
+        hasFluttered = false;
 
         characterController.enabled = false;
         transform.position = position;

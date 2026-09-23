@@ -371,6 +371,10 @@ public class PlayerController : MonoBehaviour
             ExecuteJump(boingy.boinginess);
         }
     }
+    public void ApplyExternalMovement(Vector3 movement)
+    {
+        characterController.Move(movement);
+    }
 
     public void teleport(Vector3 position)
     {

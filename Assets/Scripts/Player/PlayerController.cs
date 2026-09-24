@@ -12,12 +12,13 @@ public class PlayerController : MonoBehaviour
     private CharacterController characterController;
     [SerializeField] private CharacterAnimator characterAnimator;
     [SerializeField] private Transform cameraTransform;
+    [SerializeField] OrbitCamera orbitCamera;
 
     [Header("Movement Settings")]
     [SerializeField] private float maxSpeed = 7f; 
     [SerializeField] private float gravity = -50f;
     [SerializeField] private float jumpForce = 15f;
-    [SerializeField] private float terminalVelocity = -16f;
+    [SerializeField] private float terminalVelocity = -24f;
 
     [Header("Inertia & Acceleration")]
     [SerializeField] private float groundAcceleration = 40f;
@@ -392,6 +393,8 @@ public class PlayerController : MonoBehaviour
         isTriggerSliding = false;
         isFluttering = false;
         hasFluttered = false;
+        orbitCamera.ClearDialogueTarget();
+        
 
         characterController.enabled = false;
         transform.position = position;

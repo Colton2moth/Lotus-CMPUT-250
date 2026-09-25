@@ -26,6 +26,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float airAcceleration = 25f;
     [SerializeField] private float airDeceleration = 6f;
 
+    [Header("Chain Jumping")]
+    [SerializeField] private float chainWindow = 0.12f;
+    [SerializeField] private float chainSpeedBoost = 1f; // per tier
+    [SerializeField] private float chainPowerBoost = 0.5f; // per tier
+    [SerializeField] private float chainMax = 2f;
+
     [Header("Sliding")]
     [SerializeField] private float slideMaxSpeed = 9f;
     [SerializeField] private float slideAcceleration = 5f;

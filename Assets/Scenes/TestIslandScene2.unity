@@ -446,8 +446,56 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 39439111241555850, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
+      propertyPath: orbitCamera
+      value: 
+      objectReference: {fileID: 963194232}
+    - target: {fileID: 39439111241555850, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
+      propertyPath: flutterPower
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 39439111241555850, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
+      propertyPath: cameraTransform
+      value: 
+      objectReference: {fileID: 963194228}
+    - target: {fileID: 39439111241555850, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
+      propertyPath: flutterMaxSpeed
+      value: 2.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 39439111241555850, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
+      propertyPath: flutterDipTarget
+      value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 39439111241555850, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
+      propertyPath: flutterMinHeight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 39439111241555850, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
       propertyPath: terminalVelocity
-      value: -24
+      value: -30
+      objectReference: {fileID: 0}
+    - target: {fileID: 39439111241555850, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
+      propertyPath: flutterDipPortion
+      value: 0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 39439111241555850, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
+      propertyPath: flutterJumpDuration
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 39439111241555850, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
+      propertyPath: flutterSteerStrength
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 39439111241555850, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
+      propertyPath: flutterAirAcceleration
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 39439111241555850, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
+      propertyPath: flutterMomentumDecayMult
+      value: 1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 39439111241555850, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
+      propertyPath: flutterDownwardMomentumMult
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 605887578747211799, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1884,7 +1932,7 @@ MonoBehaviour:
   timeToDrown: 2.5
   waterPostProcess: {fileID: 2046168721}
   waterPostProcessLerpSpeed: 4
-  playerResetPosition: {fileID: 1701263114}
+  playerResetPosition: {fileID: 2039370346}
   playerController: {fileID: 581725942}
 --- !u!1001 &618517771
 PrefabInstance:
@@ -4726,7 +4774,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b3f04447dd4005d41a267f6e4b53545c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 9.453203
+      value: 8.9
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b3f04447dd4005d41a267f6e4b53545c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -6828,6 +6876,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1580487562}
     m_Modifications:
+    - target: {fileID: 1579925902891534012, guid: 82ad6684adda5204583ffe730e5c0f3f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.9646
+      objectReference: {fileID: 0}
+    - target: {fileID: 1579925902891534012, guid: 82ad6684adda5204583ffe730e5c0f3f, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.0041
+      objectReference: {fileID: 0}
+    - target: {fileID: 1579925902891534012, guid: 82ad6684adda5204583ffe730e5c0f3f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.5752
+      objectReference: {fileID: 0}
+    - target: {fileID: 1579925902891534012, guid: 82ad6684adda5204583ffe730e5c0f3f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.0143
+      objectReference: {fileID: 0}
     - target: {fileID: 3683344927491921210, guid: 82ad6684adda5204583ffe730e5c0f3f, type: 3}
       propertyPath: m_Name
       value: Block_01_H2_grass
@@ -7111,6 +7175,22 @@ PrefabInstance:
     - target: {fileID: 2220605178557489660, guid: 3fff30e235852014190c94ac10bb7d11, type: 3}
       propertyPath: m_Name
       value: Block_01_H3_grass
+      objectReference: {fileID: 0}
+    - target: {fileID: 2760693078584878744, guid: 3fff30e235852014190c94ac10bb7d11, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.9835509
+      objectReference: {fileID: 0}
+    - target: {fileID: 2760693078584878744, guid: 3fff30e235852014190c94ac10bb7d11, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.002
+      objectReference: {fileID: 0}
+    - target: {fileID: 2760693078584878744, guid: 3fff30e235852014190c94ac10bb7d11, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -10.9439
+      objectReference: {fileID: 0}
+    - target: {fileID: 2760693078584878744, guid: 3fff30e235852014190c94ac10bb7d11, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.0069
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

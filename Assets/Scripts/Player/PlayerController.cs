@@ -29,8 +29,12 @@ public class PlayerController : MonoBehaviour
     [Header("Chain Jumping")]
     [SerializeField] private float chainWindow = 0.12f;
     [SerializeField] private float chainSpeedBoost = 1f; // per tier
-    [SerializeField] private float chainPowerBoost = 0.5f; // per tier
+    [SerializeField] private float chainPowerBoost = 0f; // per tier
     [SerializeField] private float chainMax = 2f;
+
+    private float timeGrounded = 0f;
+    private float currentChain = 0f;
+    private bool wasGrounded = false;
 
     [Header("Sliding")]
     [SerializeField] private float slideMaxSpeed = 9f;
@@ -63,6 +67,9 @@ public class PlayerController : MonoBehaviour
 
     private float coyoteTimeCounter;
     private float jumpBufferCounter;
+
+    [Header("Visual Effects")]
+    [SerializeField] private TrailRenderer speedTrail;
 
     private float verticalVelocity;
     private Vector3 horizontalVelocity;
@@ -126,6 +133,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+
+        UpdateChainTimer();
         //Debug.DrawRay(transform.position, Vector3.down * jumpBufferRayCast, Color.red);
 
         // Checks ground and resets coyote timer otherwise count down the timer
@@ -282,7 +291,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            Vector3 targetVelocity = moveDirection * maxSpeed;
+            float absoluteMaxSpeed = maxSpeed + (currentChain * chainSpeedBoost);
+            Vector3 targetVelocity = moveDirection * absoluteMaxSpeed;
 
             float rate;
             if (IsGrounded)
@@ -344,7 +354,19 @@ public class PlayerController : MonoBehaviour
     // does the jump and triggers jump animation
     public void ExecuteJump(float setJumpForce)
     {
-        verticalVelocity = setJumpForce;
+        float finalJumpForce = setJumpForce;
+
+        if (setJumpForce == jumpForce)
+        {
+            ApplyChainBoost();
+            finalJumpForce += (currentChain * chainPowerBoost);
+        }
+        else
+        {
+            currentChain = 0f;
+        }
+
+        verticalVelocity = finalJumpForce;
         coyoteTimeCounter = 0;
         jumpBufferCounter = 0;
 
@@ -356,6 +378,7 @@ public class PlayerController : MonoBehaviour
     {
         isFluttering = true;
         hasFluttered = true;
+        currentChain = 0f;
         flutterTimeCounter = flutterJumpDuration;
 
         // Keep a percentage of downwards momentum when fluttering starts
@@ -421,6 +444,46 @@ public class PlayerController : MonoBehaviour
         if (hit.collider.TryGetComponent<OingyBoingy>(out OingyBoingy boingy))
         {
             ExecuteJump(boingy.boinginess);
+        }
+    }
+
+    private void UpdateChainTimer()
+    {
+        if (IsGrounded)
+        {
+            if (!wasGrounded)
+            {
+                timeGrounded = 0f;
+            }
+            timeGrounded += Time.deltaTime;
+
+            if (timeGrounded > chainWindow)
+            {
+                currentChain = 0f;
+            }
+        }
+        wasGrounded = IsGrounded;
+
+        if (speedTrail != null)
+        {
+            speedTrail.emitting = currentChain > 0f;
+        }
+    }
+
+    private void ApplyChainBoost()
+    {
+        if (horizontalVelocity.magnitude > (maxSpeed / 2))
+        {
+            if (timeGrounded <= chainWindow && currentChain < chainMax)
+            {
+                currentChain++;
+            }
+
+            Vector3 moveDirection = horizontalVelocity.normalized;
+            horizontalVelocity += moveDirection * (currentChain * chainSpeedBoost);
+
+            float absoluteMaxSpeed = maxSpeed + (chainMax * chainSpeedBoost);
+            horizontalVelocity = Vector3.ClampMagnitude(horizontalVelocity, absoluteMaxSpeed);
         }
     }
     public void ApplyExternalMovement(Vector3 movement)

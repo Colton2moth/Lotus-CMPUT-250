@@ -54,7 +54,7 @@ public class CharacterAnimator : AnimatedEntity
         if (previousIndex != index && DefaultAnimationCycle == walk.GetList(currentFacing))
         {
             // frames where player foot hits the ground
-            if ((index == 1 || index == 3) && playerController.IsGrounded)
+            if ((index == 2 || index == 6) && playerController.IsGrounded)
             {
                 AudioController.Instance.PlayFootstep();
             }

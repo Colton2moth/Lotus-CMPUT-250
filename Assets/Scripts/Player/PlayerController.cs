@@ -74,6 +74,8 @@ public class PlayerController : MonoBehaviour
     private float verticalVelocity;
     private Vector3 horizontalVelocity;
 
+    public float currentVerticalVelocity => verticalVelocity;
+
     private float lastGroundedTime;
     // since characterController keeps returning true when hugging a wall. Now player will only be considered grounded if their last grounded time is < 0.05 and isGrounded 
     // => means it recalculates it every time its called
@@ -171,6 +173,7 @@ public class PlayerController : MonoBehaviour
         if (sliding && isFluttering)
         {
             isFluttering = false;
+            AudioController.Instance.StopFlutterLoop();
         }
 
         if (!sliding)
@@ -195,7 +198,13 @@ public class PlayerController : MonoBehaviour
         if (IsGrounded)
         {
             hasFluttered = false;
-            isFluttering = false;
+
+            // incase the rare moment happens where the player is fluttering when touching the ground
+            if (isFluttering)
+            {
+                isFluttering = false;
+                AudioController.Instance.StopFlutterLoop();
+            }
         }
 
         // flatten camera direction to ignore pitch/tilt
@@ -399,10 +408,6 @@ public class PlayerController : MonoBehaviour
         if (verticalVelocity < 0f)
         {
             verticalVelocity *= flutterDownwardMomentumMult;
-        }
-        else
-        {
-            verticalVelocity = 0f;
         }
 
         // maxes horizontal movement to the flutterMaxSpeed, commented out in favor of soft capping it instead in Move()

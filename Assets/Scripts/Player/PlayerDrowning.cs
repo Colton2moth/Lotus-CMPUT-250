@@ -8,18 +8,24 @@ public class PlayerDrowning : MonoBehaviour
 {
     [SerializeField] RisingWater water;
 
-    [SerializeField] Transform topOfHead;
-    [SerializeField] float timeToDrown = 2.0f;
+    [SerializeField] private Transform topOfHead;
+    [SerializeField] private float timeToDrown = 2.0f;
 
-    [SerializeField] Volume waterPostProcess;
-    [SerializeField] float waterPostProcessLerpSpeed = 0.3f;
+    [SerializeField] private float deadlySpeed = -30f;
+    [SerializeField] private float requiredDepthForDeath = 4f;
+    [SerializeField] private LayerMask groundLayerMask;
 
-    float drownTimer;
+    [SerializeField] private Volume waterPostProcess;
+    [SerializeField] private float waterPostProcessLerpSpeed = 0.3f;
+
+    private float drownTimer;
+    // private bool wasUnderWater;
+    // private bool isDying;
 
 
-    [SerializeField] Transform playerResetPosition;
+    [SerializeField] private Transform playerResetPosition;
 
-    [SerializeField] PlayerController playerController;
+    [SerializeField] private PlayerController playerController;
 
     // Start is called before the first frame update
     void Start()
@@ -30,25 +36,42 @@ public class PlayerDrowning : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (topOfHead.transform.position.y < water.transform.position.y)
+        bool isUnderwater = topOfHead.transform.position.y < water.transform.position.y;
+
+        if (isUnderwater)
+        {
+            bool isDeep = !Physics.Raycast(playerController.transform.position, Vector3.down, requiredDepthForDeath, groundLayerMask);
+            if (playerController.currentVerticalVelocity <= deadlySpeed && isDeep)
+            {
+                Die();
+                return;
+            }
+        }
+
+        if (isUnderwater)
         {
             drownTimer -= Time.deltaTime;
-            if(drownTimer <= 0)
+            if (drownTimer <= 0)
             {
-                //TODO: checkpoints set this dynamically
-                water.ResetMe(-2.5f);
-                
-                playerController.teleport(playerResetPosition.position);
+                Die();
             }
 
-            waterPostProcess.weight = Mathf.Lerp(waterPostProcess.weight, 1.0f, waterPostProcessLerpSpeed*Time.deltaTime);
+            waterPostProcess.weight = Mathf.Lerp(waterPostProcess.weight, 1.0f, waterPostProcessLerpSpeed * Time.deltaTime);
         }
         else
         {
-            waterPostProcess.weight = Mathf.Lerp(waterPostProcess.weight, 0.0f, waterPostProcessLerpSpeed*Time.deltaTime);
+            waterPostProcess.weight = Mathf.Lerp(waterPostProcess.weight, 0.0f, waterPostProcessLerpSpeed * Time.deltaTime);
 
             drownTimer = timeToDrown;
         }
+    }
+
+    private void Die()
+    {
+        water.ResetMe(-2.5f);
+        playerController.teleport(playerResetPosition.position);
+        drownTimer = timeToDrown;
+        waterPostProcess.weight = 0f;
     }
 
 }

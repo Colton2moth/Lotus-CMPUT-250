@@ -77,7 +77,7 @@ public class PlayerController : MonoBehaviour
     private float lastGroundedTime;
     // since characterController keeps returning true when hugging a wall. Now player will only be considered grounded if their last grounded time is < 0.05 and isGrounded 
     // => means it recalculates it every time its called
-    private bool IsGrounded => characterController.isGrounded && (Time.time - lastGroundedTime < 0.05f);
+    public bool IsGrounded => characterController.isGrounded && (Time.time - lastGroundedTime < 0.05f);
 
     public bool canMove = true;
 
@@ -133,7 +133,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-
+        // chain jumping
         UpdateChainTimer();
         //Debug.DrawRay(transform.position, Vector3.down * jumpBufferRayCast, Color.red);
 
@@ -234,6 +234,7 @@ public class PlayerController : MonoBehaviour
                 if (flutterTimeCounter <= 0)
                 {
                     isFluttering = false;
+                    AudioController.Instance.StopFlutterLoop();
                 }
                 else
                 {
@@ -258,32 +259,38 @@ public class PlayerController : MonoBehaviour
 
         if (isTriggerSliding)
         {
-            Vector3 flatSlideDir = new Vector3(currentSlideDirection.x, 0f, currentSlideDirection.z).normalized;
+            // sliding, gets sliding direction and the player direction and does vector addition. Accelerates sliding speed at the rate of slideAcceleration
+            Vector3 SlideDir = new Vector3(currentSlideDirection.x, 0f, currentSlideDirection.z).normalized;
             Vector3 steerVector = moveDirection * (maxSpeed * slideSteerStrength);
 
-            Vector3 targetSlideVelocity = (flatSlideDir * slideMaxSpeed) + steerVector;
+            Vector3 targetSlideVelocity = (SlideDir * slideMaxSpeed) + steerVector;
             horizontalVelocity = Vector3.MoveTowards(horizontalVelocity, targetSlideVelocity, slideAcceleration * Time.deltaTime);
         }
         else if (isFluttering)
         {
+            // gets magnitude (speed) of vector
             float currentHorizontalSpeed = horizontalVelocity.magnitude;
 
             if (currentHorizontalSpeed > flutterMaxSpeed)
             {
+                // linearly move the excess speed to the flutter max speed at the rate of flutterMomentumDecayMult * airDeceleration
                 float softCapSpeed = Mathf.MoveTowards(currentHorizontalSpeed, flutterMaxSpeed, airDeceleration * flutterMomentumDecayMult * Time.deltaTime);
 
                 if (input.sqrMagnitude > 0.01f)
                 {
+                    // If player is turning/moving while fluttering then linearly rotate their movement direction
                     Vector3 SteerDirection = Vector3.RotateTowards(horizontalVelocity.normalized, moveDirection, flutterSteerStrength * Time.deltaTime, 0f);
                     horizontalVelocity = SteerDirection * softCapSpeed;
                 }
                 else
                 {
+                    // otherwise normal
                     horizontalVelocity = horizontalVelocity.normalized * softCapSpeed;
                 }
             }
             else
             {
+                // applies flutterAirAcceleration when fluttering and moves at flutterMaxSpeed
                 Vector3 targetVelocity = moveDirection * flutterMaxSpeed;
                 float rate = (input.sqrMagnitude > 0.01) ? flutterAirAcceleration : airDeceleration;
                 horizontalVelocity = Vector3.MoveTowards(horizontalVelocity, targetVelocity, rate * Time.deltaTime);
@@ -338,8 +345,7 @@ public class PlayerController : MonoBehaviour
         if (!canMove) return;
 
         // So if player is close to ground then we buffer jump instead of flutterjump
-        bool nearGround = Physics.Raycast(transform.position, Vector3.down, jumpBufferRayCast);
-        
+        bool nearGround = Physics.SphereCast(transform.position, 0.3f, Vector3.down, out _, jumpBufferRayCast);
 
         // if player isn't on the ground and hasn't yet fluttered this jump, execute the flutter
         if (!IsGrounded && !hasFluttered && coyoteTimeCounter <= 0f && !nearGround)
@@ -356,15 +362,21 @@ public class PlayerController : MonoBehaviour
     {
         float finalJumpForce = setJumpForce;
 
+        // only jumping can add to chain
         if (setJumpForce == jumpForce)
         {
             ApplyChainBoost();
+
+            // jump boost for chaining
             finalJumpForce += (currentChain * chainPowerBoost);
         }
         else
         {
             currentChain = 0f;
         }
+
+        float comboPitch = 1f + (currentChain * 0.15f);
+        AudioController.Instance.PlayJump(comboPitch);
 
         verticalVelocity = finalJumpForce;
         coyoteTimeCounter = 0;
@@ -380,6 +392,8 @@ public class PlayerController : MonoBehaviour
         hasFluttered = true;
         currentChain = 0f;
         flutterTimeCounter = flutterJumpDuration;
+
+        AudioController.Instance.StartFlutterLoop();
 
         // Keep a percentage of downwards momentum when fluttering starts
         if (verticalVelocity < 0f)
@@ -406,6 +420,7 @@ public class PlayerController : MonoBehaviour
         if (isFluttering)
         {
             isFluttering = false;
+            AudioController.Instance.StopFlutterLoop();
         }
 
         if (verticalVelocity > 0f)
@@ -447,16 +462,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // keeps track of whether the player successfully chains a jump or can chain a jump
     private void UpdateChainTimer()
     {
         if (IsGrounded)
         {
+            // reset timer to 0f if player just touched the ground
             if (!wasGrounded)
             {
                 timeGrounded = 0f;
             }
             timeGrounded += Time.deltaTime;
 
+            // if time on ground is greater than chain window then reset stacks
             if (timeGrounded > chainWindow)
             {
                 currentChain = 0f;
@@ -464,12 +482,14 @@ public class PlayerController : MonoBehaviour
         }
         wasGrounded = IsGrounded;
 
+        // trail only shows up when chain >= 1
         if (speedTrail != null)
         {
             speedTrail.emitting = currentChain > 0f;
         }
     }
 
+    // applies the speed and jumppower boosts of current chain amount.
     private void ApplyChainBoost()
     {
         if (horizontalVelocity.magnitude > (maxSpeed / 2))
@@ -491,6 +511,7 @@ public class PlayerController : MonoBehaviour
         characterController.Move(movement);
     }
 
+    // resets player
     public void teleport(Vector3 position)
     {
         verticalVelocity = 0;

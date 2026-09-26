@@ -28,6 +28,8 @@ public class CharacterAnimator : AnimatedEntity
     public DirectionalAnimations jump;
     public DirectionalAnimations flutter;
 
+    private PlayerController playerController;
+
     private int currentFacing = 0; // 0 is front, 1 is back, 2 is side.
 
     void Start()
@@ -38,11 +40,25 @@ public class CharacterAnimator : AnimatedEntity
         // default is front facing idle
         DefaultAnimationCycle = idle.GetList(0);
 
+        // get playerController
+        playerController = GetComponentInParent<PlayerController>();
+
         base.AnimationSetup();
     }
     void Update()
     {
+        int previousIndex = index;
         base.AnimationUpdate();
+
+        // If the frame just changed and we are currently playing the walk cycle
+        if (previousIndex != index && DefaultAnimationCycle == walk.GetList(currentFacing))
+        {
+            // frames where player foot hits the ground
+            if ((index == 1 || index == 3) && playerController.IsGrounded)
+            {
+                AudioController.Instance.PlayFootstep();
+            }
+        }
     }
 
     // Reads input then changes direction of the sprite

@@ -11,7 +11,7 @@ public class AnimatedEntity : MonoBehaviour
     //private animation stuff
     private float animationTimer;//current number of seconds since last animation frame update
     private float animationTimerMax;//max number of seconds for each frame, defined by Framerate
-    private int index;//current index in the DefaultAnimationCycle
+    protected int index;//current index in the DefaultAnimationCycle
     
 
     //interrupt animation info

@@ -378,14 +378,15 @@ public class PlayerController : MonoBehaviour
 
             // jump boost for chaining
             finalJumpForce += (currentChain * chainPowerBoost);
+
+            float comboPitch = 1f + (currentChain * 0.15f);
+            AudioController.Instance.PlayJump(comboPitch);
+
         }
         else
         {
             currentChain = 0f;
         }
-
-        float comboPitch = 1f + (currentChain * 0.15f);
-        AudioController.Instance.PlayJump(comboPitch);
 
         verticalVelocity = finalJumpForce;
         coyoteTimeCounter = 0;

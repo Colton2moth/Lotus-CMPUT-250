@@ -76,9 +76,9 @@ public class PlayerController : MonoBehaviour
      *  https://www.youtube.com/watch?v=SsckrYYxcuM - Dave / GameDevelopment - Slope sliding vectors and normal projections.
      *  https://www.youtube.com/watch?v=K1xZ-rycYY8&t=3s - Bendux - New Input System callbacks, variable jump height.
      *  https://www.youtube.com/watch?v=fJyi7l2tWKo - LlamAcademy - Raycasts, layermasks etc. 
-     *  https://www.youtube.com/watch?v=MOYiVLEnhrw  - Freya Holmér - Math for Game Devs P1 (Her entire video catalogue is especially useful)
-     *  https://www.youtube.com/watch?v=XiwEyopOMqg - Freya Holmér - Math for Game Devs P2
-     *  https://www.youtube.com/watch?v=1NLekEd770w&t - Freya Holmér -  Math for Game Devs P3
+     *  https://www.youtube.com/watch?v=MOYiVLEnhrw  - Freya Holmï¿½r - Math for Game Devs P1 (Her entire video catalogue is especially useful)
+     *  https://www.youtube.com/watch?v=XiwEyopOMqg - Freya Holmï¿½r - Math for Game Devs P2
+     *  https://www.youtube.com/watch?v=1NLekEd770w&t - Freya Holmï¿½r -  Math for Game Devs P3
      *  
      *  Forum:
      *  https://discussions.unity.com/t/isgrounded-returns-true-when-colliding-with-wall/931376 - Forum for IsGrounded returns true when colliding with wall
@@ -338,7 +338,25 @@ public class PlayerController : MonoBehaviour
     // does the jump and triggers jump animation
     public void ExecuteJump(float setJumpForce)
     {
-        verticalVelocity = setJumpForce;
+        float finalJumpForce = setJumpForce;
+
+        // only jumping can add to chain
+        if (setJumpForce == jumpForce)
+        {
+            ApplyChainBoost();
+
+            // jump boost for chaining
+            finalJumpForce += (currentChain * chainPowerBoost);
+
+            float comboPitch = 1f + (currentChain * 0.15f);
+            AudioController.Instance.PlayJump(comboPitch);
+        }
+        else
+        {
+            currentChain = 0f;
+        }
+
+        verticalVelocity = finalJumpForce;
         coyoteTimeCounter = 0;
         jumpBufferCounter = 0;
 

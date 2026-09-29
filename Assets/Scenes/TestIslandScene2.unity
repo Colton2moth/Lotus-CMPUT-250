@@ -498,6 +498,10 @@ PrefabInstance:
       value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 39439111241555850, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
+      propertyPath: jumpBufferRayCast
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 39439111241555850, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
       propertyPath: flutterJumpDuration
       value: 0.8
       objectReference: {fileID: 0}
@@ -600,6 +604,14 @@ PrefabInstance:
     - target: {fileID: 7128530898025423119, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7453101836890193497, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.043
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587525857957228910, guid: 39aeea3ed8fb0dd4fab901ae2aa31086, type: 3}
+      propertyPath: m_Offset.z
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

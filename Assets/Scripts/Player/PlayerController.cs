@@ -26,6 +26,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float airAcceleration = 25f;
     [SerializeField] private float airDeceleration = 6f;
 
+    [Header("Chain Jumping")]
+    [SerializeField] private float chainWindow = 0.12f;
+    [SerializeField] private float chainSpeedBoost = 1f; // per tier
+    [SerializeField] private float chainPowerBoost = 0f; // per tier
+    [SerializeField] private float chainMax = 2f;
+
+    private float timeGrounded = 0f;
+    private float currentChain = 0f;
+    private bool wasGrounded = false;
+
     [Header("Sliding")]
     [SerializeField] private float slideMaxSpeed = 9f;
     [SerializeField] private float slideAcceleration = 5f;
@@ -58,13 +68,18 @@ public class PlayerController : MonoBehaviour
     private float coyoteTimeCounter;
     private float jumpBufferCounter;
 
+    [Header("Visual Effects")]
+    [SerializeField] private TrailRenderer speedTrail;
+
     private float verticalVelocity;
     private Vector3 horizontalVelocity;
+
+    public float currentVerticalVelocity => verticalVelocity;
 
     private float lastGroundedTime;
     // since characterController keeps returning true when hugging a wall. Now player will only be considered grounded if their last grounded time is < 0.05 and isGrounded 
     // => means it recalculates it every time its called
-    private bool IsGrounded => characterController.isGrounded && (Time.time - lastGroundedTime < 0.05f);
+    public bool IsGrounded => characterController.isGrounded && (Time.time - lastGroundedTime < 0.05f);
 
     public bool canMove = true;
 
@@ -120,6 +135,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        // chain jumping
+        UpdateChainTimer();
         //Debug.DrawRay(transform.position, Vector3.down * jumpBufferRayCast, Color.red);
 
         // Checks ground and resets coyote timer otherwise count down the timer
@@ -156,6 +173,7 @@ public class PlayerController : MonoBehaviour
         if (sliding && isFluttering)
         {
             isFluttering = false;
+            AudioController.Instance.StopFlutterLoop();
         }
 
         if (!sliding)
@@ -180,7 +198,13 @@ public class PlayerController : MonoBehaviour
         if (IsGrounded)
         {
             hasFluttered = false;
-            isFluttering = false;
+
+            // incase the rare moment happens where the player is fluttering when touching the ground
+            if (isFluttering)
+            {
+                isFluttering = false;
+                AudioController.Instance.StopFlutterLoop();
+            }
         }
 
         // flatten camera direction to ignore pitch/tilt
@@ -219,6 +243,7 @@ public class PlayerController : MonoBehaviour
                 if (flutterTimeCounter <= 0)
                 {
                     isFluttering = false;
+                    AudioController.Instance.StopFlutterLoop();
                 }
                 else
                 {
@@ -243,32 +268,38 @@ public class PlayerController : MonoBehaviour
 
         if (isTriggerSliding)
         {
-            Vector3 flatSlideDir = new Vector3(currentSlideDirection.x, 0f, currentSlideDirection.z).normalized;
+            // sliding, gets sliding direction and the player direction and does vector addition. Accelerates sliding speed at the rate of slideAcceleration
+            Vector3 SlideDir = new Vector3(currentSlideDirection.x, 0f, currentSlideDirection.z).normalized;
             Vector3 steerVector = moveDirection * (maxSpeed * slideSteerStrength);
 
-            Vector3 targetSlideVelocity = (flatSlideDir * slideMaxSpeed) + steerVector;
+            Vector3 targetSlideVelocity = (SlideDir * slideMaxSpeed) + steerVector;
             horizontalVelocity = Vector3.MoveTowards(horizontalVelocity, targetSlideVelocity, slideAcceleration * Time.deltaTime);
         }
         else if (isFluttering)
         {
+            // gets magnitude (speed) of vector
             float currentHorizontalSpeed = horizontalVelocity.magnitude;
 
             if (currentHorizontalSpeed > flutterMaxSpeed)
             {
+                // linearly move the excess speed to the flutter max speed at the rate of flutterMomentumDecayMult * airDeceleration
                 float softCapSpeed = Mathf.MoveTowards(currentHorizontalSpeed, flutterMaxSpeed, airDeceleration * flutterMomentumDecayMult * Time.deltaTime);
 
                 if (input.sqrMagnitude > 0.01f)
                 {
+                    // If player is turning/moving while fluttering then linearly rotate their movement direction
                     Vector3 SteerDirection = Vector3.RotateTowards(horizontalVelocity.normalized, moveDirection, flutterSteerStrength * Time.deltaTime, 0f);
                     horizontalVelocity = SteerDirection * softCapSpeed;
                 }
                 else
                 {
+                    // otherwise normal
                     horizontalVelocity = horizontalVelocity.normalized * softCapSpeed;
                 }
             }
             else
             {
+                // applies flutterAirAcceleration when fluttering and moves at flutterMaxSpeed
                 Vector3 targetVelocity = moveDirection * flutterMaxSpeed;
                 float rate = (input.sqrMagnitude > 0.01) ? flutterAirAcceleration : airDeceleration;
                 horizontalVelocity = Vector3.MoveTowards(horizontalVelocity, targetVelocity, rate * Time.deltaTime);
@@ -276,7 +307,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            Vector3 targetVelocity = moveDirection * maxSpeed;
+            float absoluteMaxSpeed = maxSpeed + (currentChain * chainSpeedBoost);
+            Vector3 targetVelocity = moveDirection * absoluteMaxSpeed;
 
             float rate;
             if (IsGrounded)
@@ -322,8 +354,7 @@ public class PlayerController : MonoBehaviour
         if (!canMove) return;
 
         // So if player is close to ground then we buffer jump instead of flutterjump
-        bool nearGround = Physics.Raycast(transform.position, Vector3.down, jumpBufferRayCast);
-        
+        bool nearGround = Physics.SphereCast(transform.position, 0.3f, Vector3.down, out _, jumpBufferRayCast);
 
         // if player isn't on the ground and hasn't yet fluttered this jump, execute the flutter
         if (!IsGrounded && !hasFluttered && coyoteTimeCounter <= 0f && !nearGround)
@@ -350,6 +381,7 @@ public class PlayerController : MonoBehaviour
 
             float comboPitch = 1f + (currentChain * 0.15f);
             AudioController.Instance.PlayJump(comboPitch);
+
         }
         else
         {
@@ -368,16 +400,15 @@ public class PlayerController : MonoBehaviour
     {
         isFluttering = true;
         hasFluttered = true;
+        currentChain = 0f;
         flutterTimeCounter = flutterJumpDuration;
+
+        AudioController.Instance.StartFlutterLoop();
 
         // Keep a percentage of downwards momentum when fluttering starts
         if (verticalVelocity < 0f)
         {
             verticalVelocity *= flutterDownwardMomentumMult;
-        }
-        else
-        {
-            verticalVelocity = 0f;
         }
 
         // maxes horizontal movement to the flutterMaxSpeed, commented out in favor of soft capping it instead in Move()
@@ -395,6 +426,7 @@ public class PlayerController : MonoBehaviour
         if (isFluttering)
         {
             isFluttering = false;
+            AudioController.Instance.StopFlutterLoop();
         }
 
         if (verticalVelocity > 0f)
@@ -435,11 +467,57 @@ public class PlayerController : MonoBehaviour
             ExecuteJump(boingy.boinginess);
         }
     }
+
+    // keeps track of whether the player successfully chains a jump or can chain a jump
+    private void UpdateChainTimer()
+    {
+        if (IsGrounded)
+        {
+            // reset timer to 0f if player just touched the ground
+            if (!wasGrounded)
+            {
+                timeGrounded = 0f;
+            }
+            timeGrounded += Time.deltaTime;
+
+            // if time on ground is greater than chain window then reset stacks
+            if (timeGrounded > chainWindow)
+            {
+                currentChain = 0f;
+            }
+        }
+        wasGrounded = IsGrounded;
+
+        // trail only shows up when chain >= 1
+        if (speedTrail != null)
+        {
+            speedTrail.emitting = currentChain > 0f;
+        }
+    }
+
+    // applies the speed and jumppower boosts of current chain amount.
+    private void ApplyChainBoost()
+    {
+        if (horizontalVelocity.magnitude > (maxSpeed / 2))
+        {
+            if (timeGrounded <= chainWindow && currentChain < chainMax)
+            {
+                currentChain++;
+            }
+
+            Vector3 moveDirection = horizontalVelocity.normalized;
+            horizontalVelocity += moveDirection * (currentChain * chainSpeedBoost);
+
+            float absoluteMaxSpeed = maxSpeed + (chainMax * chainSpeedBoost);
+            horizontalVelocity = Vector3.ClampMagnitude(horizontalVelocity, absoluteMaxSpeed);
+        }
+    }
     public void ApplyExternalMovement(Vector3 movement)
     {
         characterController.Move(movement);
     }
 
+    // resets player
     public void teleport(Vector3 position)
     {
         verticalVelocity = 0;

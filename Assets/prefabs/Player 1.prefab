@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultAnimationCycle: []
-  Framerate: 12
+  Framerate: 16
   SpriteRenderer: {fileID: 3130227913488312462}
   idle:
     front: []

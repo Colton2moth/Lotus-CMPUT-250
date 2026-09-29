@@ -215,7 +215,7 @@ MonoBehaviour:
   flutterMomentumDecayMult: 0.9
   flutterSteerStrength: 2.1
   jumpBufferTime: 0.15
-  jumpBufferRayCast: 2.2
+  jumpBufferRayCast: 0.2
   coyoteTime: 0.1
   speedTrail: {fileID: 0}
   canMove: 1

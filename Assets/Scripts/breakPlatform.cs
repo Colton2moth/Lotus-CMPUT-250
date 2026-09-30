@@ -9,14 +9,15 @@ public class breakPlatform : MonoBehaviour
     [SerializeField] private float breakTime = 1f;
     [SerializeField] private float resetTime = 1f;
 
-    private Renderer platformRenderer;
+    [SerializeField] CrackBlockJiggler vfx;
+
     private Collider platformCollider;
 
     private Coroutine breakCoroutine;
 
     void Start()
     {
-        platformRenderer = GetComponent<Renderer>();
+
 
         // Get the collider that is NOT a trigger
         Collider[] colliders = GetComponents<Collider>();
@@ -43,16 +44,20 @@ public class breakPlatform : MonoBehaviour
 
     private IEnumerator BreakPlatform()
     {
+        vfx.JigglePercentInfluence = 1.0f;
         yield return new WaitForSeconds(breakTime);
 
-        platformRenderer.enabled = false;
+        vfx.Break();
         platformCollider.enabled = false;
 
         breakCoroutine = null;
 
         yield return new WaitForSeconds(resetTime);
 
-        platformRenderer.enabled = true;
+        vfx.Reform();
+        vfx.JigglePercentInfluence = 0.0f;
+
         platformCollider.enabled = true;
+
     }
 }

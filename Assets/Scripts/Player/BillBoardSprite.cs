@@ -19,6 +19,7 @@ public class BillboardSprite : MonoBehaviour
         if (cam == null) return;
 
         // Make the sprite match the camera's horizontal yaw so it stays upright and flat to the screen instead of being locked to one axis
-        transform.rotation = Quaternion.Euler(0f, cam.eulerAngles.y, 0f);
+        transform.rotation = Quaternion.Euler(cam.eulerAngles.x, cam.eulerAngles.y, transform.rotation.eulerAngles.z);
+        
     }
 }

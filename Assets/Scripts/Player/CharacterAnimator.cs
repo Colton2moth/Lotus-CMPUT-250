@@ -51,7 +51,7 @@ public class CharacterAnimator : AnimatedEntity
         base.AnimationUpdate();
 
         // If the frame just changed and we are currently playing the walk cycle
-        if (previousIndex != index && DefaultAnimationCycle == walk.GetList(currentFacing))
+        if (previousIndex != index && DefaultAnimationCycle == walk.side /*DefaultAnimationCycle == walk.GetList(currentFacing)*/ )
         {
             // frames where player foot hits the ground
             if ((index == 2 || index == 6) && playerController.IsGrounded)
@@ -62,24 +62,30 @@ public class CharacterAnimator : AnimatedEntity
     }
 
     // Reads input then changes direction of the sprite
-    public void UpdateFacing(Vector2 input) 
+    public void UpdateFacing(Vector2 input)
     {
-        //prioritizes Front facing and back facing actions 
-        if (Mathf.Abs(input.y) >= Mathf.Abs(input.x))
+        // decoupled it so pressing a side key always update sthe sprite facing direction, before pressing W or S then pressing A or D locks the facing direction.
+        if (Mathf.Abs(input.x) > 0.01f)
+        {
+            SpriteRenderer.flipX = (input.x < 0);
+        }
+
+        if (Mathf.Abs(input.y) > Mathf.Abs(input.x))
         {
             currentFacing = input.y > 0 ? 1 : 0;
         }
         else
         {
             currentFacing = 2;
-            SpriteRenderer.flipX = (input.x < 0);
         }
     }
-    
+
     // Swaps between idle or walk animation cycles
     public void SetMoving(bool isMoving) {
-        DirectionalAnimations set = isMoving ? walk : idle;
-        DefaultAnimationCycle = set.GetList(currentFacing);
+        //DirectionalAnimations set = isMoving ? walk : idle;
+        //DefaultAnimationCycle = set.GetList(currentFacing);
+
+        DefaultAnimationCycle = isMoving ? walk.side : idle.GetList(currentFacing); // temp
     }
 
     // interrupts current animation to play jump aniamtion cycle

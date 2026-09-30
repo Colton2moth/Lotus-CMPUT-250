@@ -84,7 +84,7 @@ SpriteRenderer:
   m_Size: {x: 0.24, y: 0.32}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &2160811033501564532
@@ -103,36 +103,32 @@ MonoBehaviour:
   Framerate: 12
   SpriteRenderer: {fileID: 3130227913488312462}
   idle:
-    front:
-    - {fileID: -1690034479, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-    back:
-    - {fileID: -419963700, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    front: []
+    back: []
     side:
-    - {fileID: 1502595780, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    - {fileID: -2068661465, guid: c45bf91ad169ae04c998c0705078d36a, type: 3}
   walk:
-    front:
-    - {fileID: -121354367, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-    - {fileID: -1690034479, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-    - {fileID: 1988358121, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-    back:
-    - {fileID: -1722096508, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-    - {fileID: -419963700, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-    - {fileID: -1082533456, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    front: []
+    back: []
     side:
-    - {fileID: 123565894, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-    - {fileID: 1502595780, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-    - {fileID: -1334758311, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    - {fileID: 2116513018, guid: c45bf91ad169ae04c998c0705078d36a, type: 3}
+    - {fileID: -252747757, guid: c45bf91ad169ae04c998c0705078d36a, type: 3}
+    - {fileID: -2068661465, guid: c45bf91ad169ae04c998c0705078d36a, type: 3}
+    - {fileID: 1844515933, guid: c45bf91ad169ae04c998c0705078d36a, type: 3}
+    - {fileID: 1231772530, guid: c45bf91ad169ae04c998c0705078d36a, type: 3}
+    - {fileID: -319048408, guid: c45bf91ad169ae04c998c0705078d36a, type: 3}
+    - {fileID: -1927731584, guid: c45bf91ad169ae04c998c0705078d36a, type: 3}
+    - {fileID: -1157223099, guid: c45bf91ad169ae04c998c0705078d36a, type: 3}
   jump:
-    front:
-    - {fileID: -1690034479, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
-    back:
-    - {fileID: -419963700, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    front: []
+    back: []
     side:
-    - {fileID: 1502595780, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+    - {fileID: -2068661465, guid: c45bf91ad169ae04c998c0705078d36a, type: 3}
   flutter:
     front: []
     back: []
-    side: []
+    side:
+    - {fileID: -2068661465, guid: c45bf91ad169ae04c998c0705078d36a, type: 3}
 --- !u!114 &544317789505055422
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -194,13 +190,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterAnimator: {fileID: 2160811033501564532}
   cameraTransform: {fileID: 0}
+  orbitCamera: {fileID: 0}
   maxSpeed: 7
   gravity: -50
   jumpForce: 15
+  terminalVelocity: -24
   groundAcceleration: 40
   groundDeceleration: 40
   airAcceleration: 25
   airDeceleration: 6
+  chainWindow: 0.12
+  chainSpeedBoost: 1
+  chainPowerBoost: 0
+  chainMax: 2
   slideMaxSpeed: 9
   slideAcceleration: 5
   slideSteerStrength: 0.4
@@ -210,8 +212,12 @@ MonoBehaviour:
   flutterAirAcceleration: 5
   flutterPower: 9
   flutterDownwardMomentumMult: 0.6
+  flutterMomentumDecayMult: 0.9
+  flutterSteerStrength: 2.1
   jumpBufferTime: 0.15
+  jumpBufferRayCast: 0.25
   coyoteTime: 0.1
+  speedTrail: {fileID: 0}
   canMove: 1
 --- !u!114 &7761852950857522539
 MonoBehaviour:

@@ -7,12 +7,47 @@ using UnityEngine;
 
 // Controls player movement, jump physics, coyote time, jump buffering, etc.
 // Also passes motion and directional data to CharacterAnimator.cs
+
+/*  Videos:
+     *  https://www.youtube.com/watch?v=XtQMytORBmM&t=240s - Game Maker's Toolkit - Engine basics, Unity hierarchy, component architecture.
+     *  https://www.youtube.com/watch?v=T2T82MWbbew&t=296s - Tvtig - CharacterController setup, Input System decoupling, LateUpdate camera follow.
+     *  https://www.youtube.com/watch?v=NsSk58un8E0&t - Beans - video for Advanced Movement Shooter Physics. Mostly used for velocity handling and sliding.
+     *  https://www.youtube.com/watch?v=z3dequX5g_E - Semikoder - CharacterController grounding and motion pipeline.
+     *  https://www.youtube.com/watch?v=SsckrYYxcuM - Dave / GameDevelopment - Slope sliding vectors and normal projections.
+     *  https://www.youtube.com/watch?v=K1xZ-rycYY8&t=3s - Bendux - New Input System callbacks, variable jump height.
+     *  https://www.youtube.com/watch?v=fJyi7l2tWKo - LlamAcademy - Raycasts, layermasks etc. 
+     *  https://www.youtube.com/watch?v=MOYiVLEnhrw  - Freya Holm�r - Math for Game Devs P1 (Her entire video catalogue is especially useful)
+     *  https://www.youtube.com/watch?v=XiwEyopOMqg - Freya Holm�r - Math for Game Devs P2
+     *  https://www.youtube.com/watch?v=1NLekEd770w&t - Freya Holm�r -  Math for Game Devs P3
+     *  
+     *  Forum:
+     *  https://discussions.unity.com/t/isgrounded-returns-true-when-colliding-with-wall/931376 - Forum for IsGrounded returns true when colliding with wall
+     *  
+     *  Documentation:
+     *  https://docs.unity3d.com/2022.3/Documentation/Manual/index.html - Unity Documentation.
+     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/index.html - Scripting Documentation.
+     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/CharacterController.html - Character Controller specific page.
+     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Quaternion.html - Quaternion specific page.
+     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html - SpriteRenderer specific page.
+     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/CollisionFlags.html - Collision Flags specific page.
+     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Mathf.html - Mathf specific page.
+     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Physics.html - Physics specific page.
+     *  - https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Physics.Raycast.html - Physics.Raycast specific page.
+     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Vector2.html - Vector 2 specific page.
+     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Vector3.html - Vector 3 specific page.
+     *  - https://docs.unity3d.com/6000.5/Documentation/ScriptReference/Vector3.MoveTowards.html - Vector3.moveTowards specific page.
+     *  
+     *  prolly go back here to revamp the descriptions but heres the credits and sources for now.
+     */
 public class PlayerController : MonoBehaviour
 {
     private CharacterController characterController;
     [SerializeField] private CharacterAnimator characterAnimator;
     [SerializeField] private Transform cameraTransform;
     [SerializeField] OrbitCamera orbitCamera;
+
+    [Header("Respawn Point")]
+    public Vector3 currentCheckpointPosition;
 
     [Header("Movement Settings")]
     [SerializeField] private float maxSpeed = 7f;
@@ -83,38 +118,6 @@ public class PlayerController : MonoBehaviour
 
     public bool canMove = true;
 
-    /*  Videos:
-     *  https://www.youtube.com/watch?v=XtQMytORBmM&t=240s - Game Maker's Toolkit - Engine basics, Unity hierarchy, component architecture.
-     *  https://www.youtube.com/watch?v=T2T82MWbbew&t=296s - Tvtig - CharacterController setup, Input System decoupling, LateUpdate camera follow.
-     *  https://www.youtube.com/watch?v=NsSk58un8E0&t - Beans - video for Advanced Movement Shooter Physics. Mostly used for velocity handling and sliding.
-     *  https://www.youtube.com/watch?v=z3dequX5g_E - Semikoder - CharacterController grounding and motion pipeline.
-     *  https://www.youtube.com/watch?v=SsckrYYxcuM - Dave / GameDevelopment - Slope sliding vectors and normal projections.
-     *  https://www.youtube.com/watch?v=K1xZ-rycYY8&t=3s - Bendux - New Input System callbacks, variable jump height.
-     *  https://www.youtube.com/watch?v=fJyi7l2tWKo - LlamAcademy - Raycasts, layermasks etc. 
-     *  https://www.youtube.com/watch?v=MOYiVLEnhrw  - Freya Holm�r - Math for Game Devs P1 (Her entire video catalogue is especially useful)
-     *  https://www.youtube.com/watch?v=XiwEyopOMqg - Freya Holm�r - Math for Game Devs P2
-     *  https://www.youtube.com/watch?v=1NLekEd770w&t - Freya Holm�r -  Math for Game Devs P3
-     *  
-     *  Forum:
-     *  https://discussions.unity.com/t/isgrounded-returns-true-when-colliding-with-wall/931376 - Forum for IsGrounded returns true when colliding with wall
-     *  
-     *  Documentation:
-     *  https://docs.unity3d.com/2022.3/Documentation/Manual/index.html - Unity Documentation.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/index.html - Scripting Documentation.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/CharacterController.html - Character Controller specific page.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Quaternion.html - Quaternion specific page.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html - SpriteRenderer specific page.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/CollisionFlags.html - Collision Flags specific page.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Mathf.html - Mathf specific page.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Physics.html - Physics specific page.
-     *  - https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Physics.Raycast.html - Physics.Raycast specific page.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Vector2.html - Vector 2 specific page.
-     *  https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Vector3.html - Vector 3 specific page.
-     *  - https://docs.unity3d.com/6000.5/Documentation/ScriptReference/Vector3.MoveTowards.html - Vector3.moveTowards specific page.
-     *  
-     *  prolly go back here to revamp the descriptions but heres the credits and sources for now.
-     */
-
     void Start()
     {
         // Grab the CharacterController component attached to this GameObject
@@ -131,6 +134,8 @@ public class PlayerController : MonoBehaviour
         {
             characterAnimator = GetComponentInChildren<CharacterAnimator>();
         }
+
+        currentCheckpointPosition = transform.position;
     }
 
     private void Update()
@@ -534,5 +539,12 @@ public class PlayerController : MonoBehaviour
         transform.position = position;
         characterController.enabled = true;
 
+    }
+
+    // reset the player to their last checkpoint
+    public void Respawn()
+    {
+        // Teleport is called inside this
+        ScreenFadeToBlack.Instance.FadeAndRespawn(this);
     }
 }

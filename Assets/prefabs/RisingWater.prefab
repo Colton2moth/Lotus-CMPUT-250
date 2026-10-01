@@ -67,6 +67,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6249b23ddfdc4294183eb58a5c07ade1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allowedToMove: 1
+  playerTarget: {fileID: 0}
+  waterRubberBandCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  curveMaxSpeed: 3
+  curveMinSpeed: 0.7
+  maxDistance: 25
+  minDistance: 3
 --- !u!1001 &7199275371826058248
 PrefabInstance:
   m_ObjectHideFlags: 0

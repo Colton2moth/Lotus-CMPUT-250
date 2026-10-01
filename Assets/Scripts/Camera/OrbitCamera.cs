@@ -1,9 +1,20 @@
 using UnityEngine;
+using static UnityEditor.SceneView;
 
 public class OrbitCamera : MonoBehaviour
 {
     [SerializeField] private Transform lookAtTransform;
     [SerializeField] private Transform mountainCenter;
+
+    public enum CameraMode { Orbit, Static }
+
+    [Header("Camera Mode")]
+    public CameraMode currentMode = CameraMode.Orbit;
+
+    [Header("Static Mode Settings")]
+    [SerializeField] private Vector3 staticPositionOffset = new Vector3(0f, 5f, -10f);
+    [SerializeField] private Vector3 staticCameraRotation = new Vector3(15f, 0f, 0f);
+    [SerializeField] private float staticSmoothSpeed = 10f;
 
     [Header("Offsets")]
     [SerializeField] private float orbitRadius = 15f;
@@ -26,6 +37,8 @@ public class OrbitCamera : MonoBehaviour
     private float lockedAngleX;
     private float lockedBaseHeight;
     private float currentCameraY;
+
+    // TODO: Allow swapping between static follow camera and orbit camera. For orbit camera allow swapping of mountain centers
 
     /* Videos:
      * https://www.youtube.com/watch?v=9dzBrLUIF8g - Sasquatch B Studios - How to make a camera like hollow knight, not too useful but can teach about direction bias, interpolation, camera ledge detection, etc.
@@ -59,72 +72,117 @@ public class OrbitCamera : MonoBehaviour
 
     void LateUpdate()
     {
-        if (lookAtTransform == null || mountainCenter == null) return;
+        if (lookAtTransform == null) return;
 
-        // calculates the players current angle around the mountain
-        Vector3 offset = lookAtTransform.position - mountainCenter.position;
-        offset.y = 0;
-        float playerAngle = Vector3.SignedAngle(Vector3.forward, offset, Vector3.up);
-
-        // if player moved outside the angular deadzone then pan the camera.
-        // DeltaAngle calculates shortest path between two angles which handles the wrap around motion for the camera
-        float angleDifference = Mathf.DeltaAngle(lockedAngleX, playerAngle);
-        if (Mathf.Abs(angleDifference) > angularDeadzone)
+        if (currentMode == CameraMode.Orbit)
         {
-            float excess = Mathf.Sign(angleDifference) * (Mathf.Abs(angleDifference) - angularDeadzone);
-            lockedAngleX += excess;
-        }
+            if (mountainCenter == null) return;
 
-        // if player is higher than current vertical height limit then pan the camera up, this activeNPC == null is there so it doesnt override the dialogue camera
-        if (activeNPC == null)
-        {
-            float yChange = lookAtTransform.position.y - lockedBaseHeight;
-            if (Mathf.Abs(yChange) > verticalDeadzone)
+            // calculates the players current angle around the mountain
+            Vector3 offset = lookAtTransform.position - mountainCenter.position;
+            offset.y = 0;
+            float playerAngle = Vector3.SignedAngle(Vector3.forward, offset, Vector3.up);
+
+            // if player moved outside the angular deadzone then pan the camera.
+            // DeltaAngle calculates shortest path between two angles which handles the wrap around motion for the camera
+            float angleDifference = Mathf.DeltaAngle(lockedAngleX, playerAngle);
+            if (Mathf.Abs(angleDifference) > angularDeadzone)
             {
-                float excess = Mathf.Sign(yChange) * (Mathf.Abs(yChange) - verticalDeadzone);
-                lockedBaseHeight += excess;
+                float excess = Mathf.Sign(angleDifference) * (Mathf.Abs(angleDifference) - angularDeadzone);
+                lockedAngleX += excess;
             }
+
+            // if player is higher than current vertical height limit then pan the camera up, this activeNPC == null is there so it doesnt override the dialogue camera
+            if (activeNPC == null)
+            {
+                float yChange = lookAtTransform.position.y - lockedBaseHeight;
+                if (Mathf.Abs(yChange) > verticalDeadzone)
+                {
+                    float excess = Mathf.Sign(yChange) * (Mathf.Abs(yChange) - verticalDeadzone);
+                    lockedBaseHeight += excess;
+                }
+            }
+
+            // converts locked angle back into a 3D vector (from center)
+            Quaternion angleRotation = Quaternion.Euler(0f, lockedAngleX, 0f);
+            Vector3 lockedOutwardDir = angleRotation * Vector3.forward;
+
+            // if interacting with an NPC, get the mid point and focus on there and set camera settings to dialogue, otherwise normal.
+            Vector3 targetFocusPoint;
+            float targetRadius;
+            float targetHeightOffset;
+            if (activeNPC != null)
+            {
+                targetFocusPoint = (lookAtTransform.position + activeNPC.position) * 0.5f;
+                targetRadius = dialogueZoomRadius;
+                targetHeightOffset = dialogueHeight;
+            }
+            else
+            {
+                targetFocusPoint = lookAtTransform.position;
+                targetRadius = orbitRadius;
+                targetHeightOffset = height;
+            }
+
+            currentFocusPoint = Vector3.Lerp(currentFocusPoint, targetFocusPoint, zoomTransitionSpeed * Time.deltaTime);
+            currentRadius = Mathf.Lerp(currentRadius, targetRadius, zoomTransitionSpeed * Time.deltaTime);
+            currentTargetHeight = Mathf.Lerp(currentTargetHeight, targetHeightOffset, zoomTransitionSpeed * Time.deltaTime);
+
+            // smooth the cameras vertical position to match the baseline + current height offset
+            float targetCameraY = lockedBaseHeight + currentTargetHeight;
+            currentCameraY = Mathf.Lerp(currentCameraY, targetCameraY, verticalSmoothSpeed * Time.deltaTime);
+
+            // position camera along the outward vector from the smoothed focus point
+            Vector3 targetPos = currentFocusPoint + (lockedOutwardDir * currentRadius);
+            targetPos.y = currentCameraY;
+            transform.position = targetPos;
+
+            // aim camera using the smoothed baseline height so small jumps inside deadzone don't tilt the camera
+            Vector3 lookTarget = currentFocusPoint;
+            lookTarget.y = currentCameraY - currentTargetHeight + 1.2f;
+
+            transform.LookAt(lookTarget);
         }
-
-        // converts locked angle back into a 3D vector (from center)
-        Quaternion angleRotation = Quaternion.Euler(0f, lockedAngleX, 0f);
-        Vector3 lockedOutwardDir = angleRotation * Vector3.forward;
-
-        // if interacting with an NPC, get the mid point and focus on there and set camera settings to dialogue, otherwise normal.
-        Vector3 targetFocusPoint;
-        float targetRadius;
-        float targetHeightOffset;
-        if (activeNPC != null)
+        else if (currentMode == CameraMode.Static)
         {
-            targetFocusPoint = (lookAtTransform.position + activeNPC.position) * 0.5f;
-            targetRadius = dialogueZoomRadius;
-            targetHeightOffset = dialogueHeight;
+            // Calculate the target position based on the fixed offset
+            Vector3 desiredPosition = lookAtTransform.position + staticPositionOffset;
+            transform.position = Vector3.Lerp(transform.position, desiredPosition, staticSmoothSpeed* Time.deltaTime);
+            transform.rotation = Quaternion.Euler(staticCameraRotation);
         }
-        else
+    }
+
+    // Swaps the camera mode and resyncs the orbit variables
+    public void SetCameraMode(CameraMode newMode)
+    {
+        currentMode = newMode;
+
+        if (newMode == CameraMode.Orbit && lookAtTransform != null && mountainCenter != null)
         {
-            targetFocusPoint = lookAtTransform.position;
-            targetRadius = orbitRadius;
-            targetHeightOffset = height;
+            lockedBaseHeight = lookAtTransform.position.y;
+            currentCameraY = transform.position.y;
+
+            Vector3 offset = lookAtTransform.position - mountainCenter.position;
+            offset.y = 0;
+            lockedAngleX = Vector3.SignedAngle(Vector3.forward, offset, Vector3.up);
+            currentFocusPoint = lookAtTransform.position;
         }
+    }
 
-        currentFocusPoint = Vector3.Lerp(currentFocusPoint, targetFocusPoint, zoomTransitionSpeed * Time.deltaTime);
-        currentRadius = Mathf.Lerp(currentRadius, targetRadius, zoomTransitionSpeed * Time.deltaTime);
-        currentTargetHeight = Mathf.Lerp(currentTargetHeight, targetHeightOffset, zoomTransitionSpeed * Time.deltaTime);
+    // Swaps the focal point of the orbit
+    public void SetMountainCenter(Transform newMountain)
+    {
+        if (newMountain == null) return;
 
-        // smooth the cameras vertical position to match the baseline + current height offset
-        float targetCameraY = lockedBaseHeight + currentTargetHeight;
-        currentCameraY = Mathf.Lerp(currentCameraY, targetCameraY, verticalSmoothSpeed * Time.deltaTime);
+        mountainCenter = newMountain;
 
-        // position camera along the outward vector from the smoothed focus point
-        Vector3 targetPos = currentFocusPoint + (lockedOutwardDir * currentRadius);
-        targetPos.y = currentCameraY;
-        transform.position = targetPos;
-
-        // aim camera using the smoothed baseline height so small jumps inside deadzone don't tilt the camera
-        Vector3 lookTarget = currentFocusPoint;
-        lookTarget.y = currentCameraY - currentTargetHeight + 1.2f;
-
-        transform.LookAt(lookTarget);
+        // uses the new mountain center to calculate the angle to the player
+        if (lookAtTransform != null && currentMode == CameraMode.Orbit)
+        {
+            Vector3 offset = lookAtTransform.position - mountainCenter.position;
+            offset.y = 0;
+            lockedAngleX = Vector3.SignedAngle(Vector3.forward, offset, Vector3.up);
+        }
     }
 
     // sets the dialogue NPC (Noah use these)

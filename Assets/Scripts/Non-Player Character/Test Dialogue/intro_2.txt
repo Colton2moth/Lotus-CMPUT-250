@@ -1,0 +1,2 @@
+intro_2,Character A,EMPTY,EMPTY,EMPTY,You chose intro_2, goodbye!
+END

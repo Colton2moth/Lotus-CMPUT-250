@@ -71,6 +71,7 @@ public class DialogueSystem : MonoBehaviour
         if(currentDialogue != null) return;
 
         isActive = true;
+        dialogueBox.ClearName();
         chunkIndex = 0;
         currentDialogue = DialogueParser.ParseDialogue(CSV);
 
@@ -85,6 +86,7 @@ public class DialogueSystem : MonoBehaviour
     {
         if(currentDialogue != null) return;
         isActive = true;
+        dialogueBox.ClearName();
         chunkIndex = -1;
         currentDialogue = dia;
         //Debug.Log($"Added dialogue with {currentDialogue.getText(chunkIndex)} as its first dialogue.");

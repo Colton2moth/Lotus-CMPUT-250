@@ -91,8 +91,12 @@ namespace Narrative
         {
             animator.SetBool("isOpen", true);
             advanceArrow.SetVisible(false);
-            nameLabel.text = "";
             isActive = true;
+        }
+
+        public void ClearName()
+        {
+            textLabel.SetText("");
         }
 
         /// <summary>

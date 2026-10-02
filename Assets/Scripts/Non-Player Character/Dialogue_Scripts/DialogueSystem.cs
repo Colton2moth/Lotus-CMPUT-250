@@ -14,6 +14,7 @@ public class DialogueSystem : MonoBehaviour
     private DialogueSystem() { }
     public static DialogueSystem Instance { get { return _ds; }}
 
+    //Setting up singleton
     void Awake()
     {
         if(_ds != null && _ds != this)
@@ -43,6 +44,7 @@ public class DialogueSystem : MonoBehaviour
     #endregion
     #region Data Containers
     //portrait ID -> portrait Sprite
+    [SerializeField] private List<Sprite> rawSprites = new List<Sprite>();
     [SerializeField] private Dictionary<string, Sprite> portraitIDSprite = new Dictionary<string, Sprite>();
     //Raw dialogues as TextAssets
     [SerializeField] private List<TextAsset> rawDialogues = new List<TextAsset>();
@@ -64,6 +66,8 @@ public class DialogueSystem : MonoBehaviour
             Dialogue newDia = DialogueParser.ParseDialogue(rawTxt.ToString());
             idDialogue[newDia.getID()] = newDia;
         }
+
+        loadSprites();
     }
 
     public void startDialogue(string CSV)
@@ -75,6 +79,10 @@ public class DialogueSystem : MonoBehaviour
         chunkIndex = 0;
         currentDialogue = DialogueParser.ParseDialogue(CSV);
 
+        portraitLeft.EnterFade(0.5f);
+        portraitRight.EnterFade(0.5f);
+        portraitLeft.SetSprite(portraitIDSprite[currentDialogue.getPortraitLeftID(chunkIndex)]);
+        portraitRight.SetSprite(portraitIDSprite[currentDialogue.getPortraitRightID(chunkIndex)]);
         Debug.Log($"Added dialogue with {currentDialogue.getText(chunkIndex)} as its first dialogue.");
         //Debug.Log($"Added dialogue with {currentDialogue.getText(chunkIndex + 1)} as its second dialogue.");
         
@@ -84,6 +92,7 @@ public class DialogueSystem : MonoBehaviour
     //Version with a Dialogue passed instead of a string to parse
     public void startDialogue(Dialogue dia)
     {
+        Debug.Log("Running start dialogue...");
         if(currentDialogue != null) return;
         isActive = true;
         dialogueBox.ClearName();
@@ -154,6 +163,8 @@ public class DialogueSystem : MonoBehaviour
         {
 
             isActive = false;
+            portraitLeft.ExitFade(0.5f);
+            portraitRight.ExitFade(0.5f);
             //Start choices if we have any
             if(currentDialogue.hasChoices()) startChoiceScreen(currentDialogue);
             currentDialogue = null;
@@ -165,11 +176,26 @@ public class DialogueSystem : MonoBehaviour
             chunkIndex++;
             dialogueBox.SetLine(currentDialogue.getText(chunkIndex));
             dialogueBox.SetName(currentDialogue.getTextboxTitle(chunkIndex));
+            Debug.Log("Here");
+            portraitLeft.SetSprite(portraitIDSprite[currentDialogue.getPortraitLeftID(chunkIndex)]);
+            portraitRight.SetSprite(portraitIDSprite[currentDialogue.getPortraitRightID(chunkIndex)]);
+            
         }
     }
     void updateDialogueBox()
     {
         if (!dialogueBox.IsOpen && isActive) dialogueBox.OpenTextbox();
         if(dialogueBox.IsOpen && !isActive) dialogueBox.CloseTextbox();
+    }
+
+    //Adds all sprites to the dictionary with their keys being their names in files
+    void loadSprites()
+    {
+        foreach(Sprite spr in rawSprites)
+        {
+            portraitIDSprite[spr.name] = spr;
+            Debug.Log($"Added {spr.name} to spriteID.");
+        }
+        portraitIDSprite["EMPTY"] = null;
     }
 }

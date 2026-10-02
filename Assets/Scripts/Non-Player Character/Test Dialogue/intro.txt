@@ -1,4 +1,4 @@
-intro,Character A,EMPTY,EMPTY,EMPTY,requested dialogue!
+intro,penguin-gray_2,penguin-gray_7,Penguin,EMPTY,requested dialogue!
 intro,Character B,EMPTY,EMPTY,EMPTY,This is the second, text!
 END
 intro_2,0,Let's Go!

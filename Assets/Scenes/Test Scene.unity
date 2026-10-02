@@ -5930,16 +5930,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 139984940}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 830481876}
+  m_Father: {fileID: 1731606565}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -300, y: 75}
+  m_AnchoredPosition: {x: -300, y: 145}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &223966916
@@ -5990,9 +5990,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b77f7672e9358b408014ece8dd5a9b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dialogueBox: {fileID: 0}
   portraitLeft: {fileID: 139984941}
   portraitRight: {fileID: 2046025963}
   ChoiceButton: {fileID: 1671874918677370363, guid: 63e4b0386bb74864586179158bf3add5, type: 3}
+  choiceButtonContainer: {fileID: 0}
+  rawSprites:
+  - {fileID: -1082533456, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+  - {fileID: -1690034479, guid: 73d3517e28f78144995a30403b5fa263, type: 3}
+  rawDialogues:
+  - {fileID: 4900000, guid: 7c8e6c5d1ae02c444bec91d84470a8b2, type: 3}
+  - {fileID: 4900000, guid: c56d7e96dea8e7943a46aa6af4d138ec, type: 3}
 --- !u!1 &270804072
 GameObject:
   m_ObjectHideFlags: 0
@@ -11155,8 +11163,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 139984944}
-  - {fileID: 2046025966}
   - {fileID: 1731606565}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -12398,6 +12404,59 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1453467848}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1457668844
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1457668846}
+  - component: {fileID: 1457668845}
+  m_Layer: 0
+  m_Name: DialogueSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1457668845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1457668844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b77f7672e9358b408014ece8dd5a9b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogueBox: {fileID: 0}
+  portraitLeft: {fileID: 0}
+  portraitRight: {fileID: 0}
+  ChoiceButton: {fileID: 1671874918677370363, guid: 63e4b0386bb74864586179158bf3add5, type: 3}
+  choiceButtonContainer: {fileID: 0}
+  rawSprites: []
+  rawDialogues:
+  - {fileID: 4900000, guid: 7c8e6c5d1ae02c444bec91d84470a8b2, type: 3}
+  - {fileID: 4900000, guid: c56d7e96dea8e7943a46aa6af4d138ec, type: 3}
+--- !u!4 &1457668846
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1457668844}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 960, y: 540, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &1460014432
 Mesh:
   m_ObjectHideFlags: 0
@@ -12781,9 +12840,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 223966917}
-  - {fileID: 911001481}
   - {fileID: 362313280}
   - {fileID: 1978072489}
+  - {fileID: 139984944}
+  - {fileID: 2046025966}
+  - {fileID: 911001481}
   m_Father: {fileID: 830481876}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -14471,16 +14532,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2046025962}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 830481876}
+  m_Father: {fileID: 1731606565}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 300, y: 75}
+  m_AnchoredPosition: {x: 300, y: 145}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &2325527337453829911
@@ -14573,3 +14634,4 @@ SceneRoots:
   - {fileID: 541595784}
   - {fileID: 915598512}
   - {fileID: 1096253728}
+  - {fileID: 1457668846}

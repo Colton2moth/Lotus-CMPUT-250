@@ -27,6 +27,8 @@ namespace Narrative
         {
             //Obtain neccesary components
             spriteRenderer = GetComponent<Image>();
+
+            ExitFade(0.5f);
         }
 
 
@@ -36,6 +38,7 @@ namespace Narrative
         /// <param name="sourceSprite">Sprite to set to</param>
         public void SetSprite(Sprite sourceSprite)
         {
+            Debug.Log($"Setting sprite to {sourceSprite.name}");
             spriteRenderer.sprite = sourceSprite;
         }
 

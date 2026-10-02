@@ -253,8 +253,24 @@ MonoBehaviour:
     side:
     - {fileID: -2068661465, guid: c45bf91ad169ae04c998c0705078d36a, type: 3}
   walk:
-    front: []
-    back: []
+    front:
+    - {fileID: -1181840788, guid: a94e0c232313dc644a5aebbea916f46e, type: 3}
+    - {fileID: 61890892, guid: a94e0c232313dc644a5aebbea916f46e, type: 3}
+    - {fileID: -100231387, guid: a94e0c232313dc644a5aebbea916f46e, type: 3}
+    - {fileID: 1575283728, guid: a94e0c232313dc644a5aebbea916f46e, type: 3}
+    - {fileID: -1924460271, guid: a94e0c232313dc644a5aebbea916f46e, type: 3}
+    - {fileID: 1693774028, guid: a94e0c232313dc644a5aebbea916f46e, type: 3}
+    - {fileID: 1496475319, guid: a94e0c232313dc644a5aebbea916f46e, type: 3}
+    - {fileID: -1179128084, guid: a94e0c232313dc644a5aebbea916f46e, type: 3}
+    back:
+    - {fileID: -448697597, guid: 0c027efdbc66f80409b5d63b8afdb2e0, type: 3}
+    - {fileID: 1753088397, guid: 0c027efdbc66f80409b5d63b8afdb2e0, type: 3}
+    - {fileID: -906648932, guid: 0c027efdbc66f80409b5d63b8afdb2e0, type: 3}
+    - {fileID: 1734260825, guid: 0c027efdbc66f80409b5d63b8afdb2e0, type: 3}
+    - {fileID: 330429052, guid: 0c027efdbc66f80409b5d63b8afdb2e0, type: 3}
+    - {fileID: 1511383218, guid: 0c027efdbc66f80409b5d63b8afdb2e0, type: 3}
+    - {fileID: 2143501621, guid: 0c027efdbc66f80409b5d63b8afdb2e0, type: 3}
+    - {fileID: -1150366780, guid: 0c027efdbc66f80409b5d63b8afdb2e0, type: 3}
     side:
     - {fileID: 2116513018, guid: c45bf91ad169ae04c998c0705078d36a, type: 3}
     - {fileID: -252747757, guid: c45bf91ad169ae04c998c0705078d36a, type: 3}
@@ -265,8 +281,10 @@ MonoBehaviour:
     - {fileID: -1927731584, guid: c45bf91ad169ae04c998c0705078d36a, type: 3}
     - {fileID: -1157223099, guid: c45bf91ad169ae04c998c0705078d36a, type: 3}
   jump:
-    front: []
-    back: []
+    front:
+    - {fileID: 1734260825, guid: 0c027efdbc66f80409b5d63b8afdb2e0, type: 3}
+    back:
+    - {fileID: -1924460271, guid: a94e0c232313dc644a5aebbea916f46e, type: 3}
     side:
     - {fileID: -2068661465, guid: c45bf91ad169ae04c998c0705078d36a, type: 3}
   flutter:
@@ -370,6 +388,7 @@ MonoBehaviour:
   characterAnimator: {fileID: 2923715324180639927}
   cameraTransform: {fileID: 0}
   orbitCamera: {fileID: 0}
+  currentCheckpointPosition: {x: 0, y: 0, z: 0}
   maxSpeed: 6.5
   gravity: -50
   jumpForce: 15
@@ -459,7 +478,6 @@ MonoBehaviour:
     m_Bits: 193
   waterPostProcess: {fileID: 0}
   waterPostProcessLerpSpeed: 4
-  playerResetPosition: {fileID: 0}
   playerController: {fileID: 778268004761609835}
 --- !u!1 &8342722283111348720
 GameObject:

@@ -51,7 +51,7 @@ public class CharacterAnimator : AnimatedEntity
         base.AnimationUpdate();
 
         // If the frame just changed and we are currently playing the walk cycle
-        if (previousIndex != index && DefaultAnimationCycle == walk.side /*DefaultAnimationCycle == walk.GetList(currentFacing)*/ )
+        if (previousIndex != index && DefaultAnimationCycle == walk.GetList(currentFacing))
         {
             // frames where player foot hits the ground
             if ((index == 2 || index == 6) && playerController.IsGrounded)
@@ -82,10 +82,10 @@ public class CharacterAnimator : AnimatedEntity
 
     // Swaps between idle or walk animation cycles
     public void SetMoving(bool isMoving) {
-        //DirectionalAnimations set = isMoving ? walk : idle;
-        //DefaultAnimationCycle = set.GetList(currentFacing);
+        DirectionalAnimations set = isMoving ? walk : idle;
+        DefaultAnimationCycle = set.GetList(currentFacing);
 
-        DefaultAnimationCycle = isMoving ? walk.side : idle.GetList(currentFacing); // temp
+        // DefaultAnimationCycle = isMoving ? walk.side : idle.GetList(currentFacing); For no Up or Down anims
     }
 
     // interrupts current animation to play jump aniamtion cycle

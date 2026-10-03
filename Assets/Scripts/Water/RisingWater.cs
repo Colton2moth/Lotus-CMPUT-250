@@ -10,21 +10,43 @@ public class RisingWater : MonoBehaviour
     // distance sampling is relative to this transform
     [SerializeField] Transform playerTarget;
 
+    [Header("Water Respawn")]
+    public float respawnLevel = -2.5f;
+
     //curve to sample for how fast to go
+    [Header("Water Rising Speed")]
     [SerializeField] AnimationCurve waterRubberBandCurve;
     [SerializeField] float curveMaxSpeed = 3f;
     [SerializeField] float curveMinSpeed = 0.7f;
-
-    ///water rises faster when close to maxDistance 
     [SerializeField] float maxDistance = 25;
-
-    ///water rise slower when close to minDistance 
     [SerializeField] float minDistance = 3;
+
+    private bool isRisingToCheckpoint = false;
+    private float targetRiseLevel;
+    private float currentRiseSpeed;
 
     // Update is called once per frame
     void Update()
     {
-        if(!allowedToMove) return;
+        if (isRisingToCheckpoint)
+        {
+            Vector3 pos = transform.position;
+            pos.y = Mathf.Lerp(pos.y, targetRiseLevel, currentRiseSpeed * Time.deltaTime);
+            transform.position = pos;
+
+            // because Mathf.Lerp keeps halving the distance, if its small enough just snap it.
+            if (Mathf.Abs(transform.position.y - targetRiseLevel) <= 0.05f)
+            {
+                pos.y = targetRiseLevel;
+                transform.position = pos;
+
+                isRisingToCheckpoint = false;
+                allowedToMove = false; // for the start water rising trigger at the start of the actual stage
+            }
+            return; 
+
+        }
+        if (!allowedToMove) return;
         transform.position += Vector3.up* getCurrentRubberBandSpeed() * Time.deltaTime;
     }
 
@@ -37,14 +59,32 @@ public class RisingWater : MonoBehaviour
         // so it scales from min speed to max speed
         float curveWeight = waterRubberBandCurve.Evaluate(curveSamplePercent);
         return Mathf.Lerp(curveMinSpeed, curveMaxSpeed, curveWeight);
-    }   
+    }
 
+    public void RiseToCheckpoint(float targetY, float riseSpeed)
+    {
+        respawnLevel = targetY;
+        targetRiseLevel = targetY;
+        currentRiseSpeed = riseSpeed;
+
+        allowedToMove = false; 
+        isRisingToCheckpoint = true; 
+    }
 
     //We can decide later whether water is responsible for knowing about checkpoints or not, basic implemenation here
     public void ResetMe(float yPosition)
     {
-        // allowedToMove = false;
-        transform.position = Vector3.up * yPosition;
+        isRisingToCheckpoint = false;
+
+        // water is reset at the level of the checkpoint
+        Vector3 pos = transform.position;
+        pos.y = respawnLevel;
+        transform.position = pos;
+    }
+
+    public void StartMe()
+    {
+        allowedToMove = true;
     }
 
     // public void StartMe()

@@ -1393,11 +1393,143 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1810466062299690692, guid: 8fab3cf358419db4d8dc3f8ce14c69df, type: 3}
   m_PrefabInstance: {fileID: 1152159589}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &322852042
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 322852043}
+  - component: {fileID: 322852044}
+  m_Layer: 0
+  m_Name: Start Water Trigger (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &322852043
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322852042}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.23, y: 0.89, z: 3.266}
+  m_LocalScale: {x: 1.9745449, y: 1, z: 1.4022}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 332028010}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &322852044
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322852042}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.46
+  m_Height: 3
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &326955451 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3556842608638307401, guid: 55f21db3de9fe8f4289e76776207dac3, type: 3}
   m_PrefabInstance: {fileID: 787006687}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &332028007
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 332028010}
+  - component: {fileID: 332028009}
+  - component: {fileID: 332028008}
+  m_Layer: 0
+  m_Name: Start Beach Water
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &332028008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 332028007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 514afbc53a9bac34a89784ae9abbadd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  risingWater: {fileID: 1024422503}
+--- !u!54 &332028009
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 332028007}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!4 &332028010
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 332028007}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.69, y: 6.08, z: -21.44}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1391865771}
+  - {fileID: 322852043}
+  - {fileID: 436392401}
+  - {fileID: 589249073}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &343525927
 GameObject:
   m_ObjectHideFlags: 0
@@ -1819,6 +1951,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   customSpawnPoint: {fileID: 727681459}
+  water: {fileID: 1024422503}
+  waterOffsetBelowCheckpoint: 3.5
+  waterRiseSpeed: 2
 --- !u!65 &412266197
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1861,6 +1996,61 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1736463095328995893, guid: 6cd982658a998be4a9757486a4bf7fb2, type: 3}
   m_PrefabInstance: {fileID: 1880586512}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &436392400
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 436392401}
+  - component: {fileID: 436392402}
+  m_Layer: 0
+  m_Name: Start Water Trigger (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &436392401
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 436392400}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.24, y: 1.95, z: 6.22}
+  m_LocalScale: {x: 1.9745449, y: 1, z: 1.4022}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 332028010}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &436392402
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 436392400}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.46
+  m_Height: 3
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &438164339
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2316,6 +2506,61 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8ae1d01783978744bb5be07c83974a47, type: 3}
+--- !u!1 &589249072
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 589249073}
+  - component: {fileID: 589249074}
+  m_Layer: 0
+  m_Name: Start Water Trigger (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &589249073
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589249072}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.311, y: 3.2, z: 8.772}
+  m_LocalScale: {x: 1.9745449, y: 1, z: 1.4022}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 332028010}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &589249074
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589249072}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.46
+  m_Height: 3
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &592820993
 GameObject:
   m_ObjectHideFlags: 0
@@ -2374,6 +2619,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   customSpawnPoint: {fileID: 1130554535}
+  water: {fileID: 1024422503}
+  waterOffsetBelowCheckpoint: 3
+  waterRiseSpeed: 2
 --- !u!4 &592820996
 Transform:
   m_ObjectHideFlags: 0
@@ -2383,7 +2631,7 @@ Transform:
   m_GameObject: {fileID: 592820993}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 15.395554, y: 27.73, z: 7.77}
+  m_LocalPosition: {x: 14.84, y: 27.73, z: 7.77}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3239,6 +3487,59 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 743851374750052593, guid: 2e6c4f1e8a27dc4498f78736671f4087, type: 3}
   m_PrefabInstance: {fileID: 1278737236}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &881643162
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 881643163}
+  - component: {fileID: 881643164}
+  m_Layer: 0
+  m_Name: Start Watter Trigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &881643163
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 881643162}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.045857947, y: 0.05356781, z: 0.12164484, w: 0.99006575}
+  m_LocalPosition: {x: 1.627, y: 6.226, z: -2.95}
+  m_LocalScale: {x: 1, y: 0.70377, z: 2.658285}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1389356788}
+  m_LocalEulerAnglesHint: {x: -5.96, y: 5.476, z: 13.724}
+--- !u!65 &881643164
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 881643162}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &896603372
 GameObject:
   m_ObjectHideFlags: 0
@@ -3801,7 +4102,7 @@ Transform:
   m_GameObject: {fileID: 949338953}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.8211905, z: -0, w: 0.5706543}
-  m_LocalPosition: {x: 1.02, y: 0.25, z: 13.81}
+  m_LocalPosition: {x: 0.95, y: 0.25, z: 13.78}
   m_LocalScale: {x: 2, y: 0.55731046, z: 4.4378524}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3929,7 +4230,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 743851374750052593, guid: 2e6c4f1e8a27dc4498f78736671f4087, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.6
+      value: 0.57722867
       objectReference: {fileID: 0}
     - target: {fileID: 743851374750052593, guid: 2e6c4f1e8a27dc4498f78736671f4087, type: 3}
       propertyPath: m_LocalScale.y
@@ -3937,11 +4238,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 743851374750052593, guid: 2e6c4f1e8a27dc4498f78736671f4087, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.6
+      value: 0.580845
       objectReference: {fileID: 0}
     - target: {fileID: 743851374750052593, guid: 2e6c4f1e8a27dc4498f78736671f4087, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -18.02
+      value: -17.9065
       objectReference: {fileID: 0}
     - target: {fileID: 743851374750052593, guid: 2e6c4f1e8a27dc4498f78736671f4087, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3949,7 +4250,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 743851374750052593, guid: 2e6c4f1e8a27dc4498f78736671f4087, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 6.75
+      value: 6.8418
       objectReference: {fileID: 0}
     - target: {fileID: 743851374750052593, guid: 2e6c4f1e8a27dc4498f78736671f4087, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4908,6 +5209,59 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2381604593376835594, guid: f8c303fcb1ec7de4ba47e1daf9982001, type: 3}
   m_PrefabInstance: {fileID: 636360595}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1269681141
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1269681142}
+  - component: {fileID: 1269681143}
+  m_Layer: 0
+  m_Name: Start Watter Trigger (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1269681142
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1269681141}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.05582567, y: 0.06702868, z: -0.032856222, w: 0.9956461}
+  m_LocalPosition: {x: -1.54, y: 8.43, z: -2.17}
+  m_LocalScale: {x: 5.413149, y: 0.70377, z: 3.8755162}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1389356788}
+  m_LocalEulerAnglesHint: {x: -6.129, y: 7.928, z: -4.205}
+--- !u!65 &1269681143
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1269681141}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1271957306
 GameObject:
   m_ObjectHideFlags: 0
@@ -5065,8 +5419,16 @@ PrefabInstance:
       value: RestingPlane_02_Garden
       objectReference: {fileID: 0}
     - target: {fileID: 743851374750052593, guid: 2e6c4f1e8a27dc4498f78736671f4087, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.96023715
+      objectReference: {fileID: 0}
+    - target: {fileID: 743851374750052593, guid: 2e6c4f1e8a27dc4498f78736671f4087, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.96401536
+      objectReference: {fileID: 0}
+    - target: {fileID: 743851374750052593, guid: 2e6c4f1e8a27dc4498f78736671f4087, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -19
+      value: -18.6238
       objectReference: {fileID: 0}
     - target: {fileID: 743851374750052593, guid: 2e6c4f1e8a27dc4498f78736671f4087, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5074,7 +5436,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 743851374750052593, guid: 2e6c4f1e8a27dc4498f78736671f4087, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.3
+      value: 5.5938
       objectReference: {fileID: 0}
     - target: {fileID: 743851374750052593, guid: 2e6c4f1e8a27dc4498f78736671f4087, type: 3}
       propertyPath: m_LocalRotation.w
@@ -5536,6 +5898,137 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 225bd02767fb31b489a1508e603a808e, type: 3}
+--- !u!1 &1389356785
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1389356788}
+  - component: {fileID: 1389356787}
+  - component: {fileID: 1389356786}
+  m_Layer: 0
+  m_Name: Start Forest Water
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1389356786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1389356785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 514afbc53a9bac34a89784ae9abbadd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  risingWater: {fileID: 1024422503}
+--- !u!54 &1389356787
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1389356785}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!4 &1389356788
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1389356785}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 14.84, y: 27.73, z: 7.77}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 881643163}
+  - {fileID: 1269681142}
+  - {fileID: 2025506432}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1391865770
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1391865771}
+  - component: {fileID: 1391865772}
+  m_Layer: 0
+  m_Name: Start Water Trigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1391865771
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1391865770}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.168, y: -0.62, z: 0.162}
+  m_LocalScale: {x: 1.9745449, y: 1, z: 1.4022}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 332028010}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &1391865772
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1391865770}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.46
+  m_Height: 3
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &1392406043 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1556833739428838214, guid: 3fff30e235852014190c94ac10bb7d11, type: 3}
@@ -6729,6 +7222,59 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5350391675854249449, guid: 697f84a7fd5c66e42b032b5a79358088, type: 3}
   m_PrefabInstance: {fileID: 1371368948}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2025506431
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2025506432}
+  - component: {fileID: 2025506433}
+  m_Layer: 0
+  m_Name: Start Watter Trigger (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2025506432
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025506431}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.036326837, y: -0.25180432, z: 0.032981865, w: 0.9665336}
+  m_LocalPosition: {x: -3.7, y: 7.23, z: -5.03}
+  m_LocalScale: {x: 2.5190291, y: 0.70377, z: 3.0860581}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1389356788}
+  m_LocalEulerAnglesHint: {x: -3.073, y: -29.331, z: 4.713}
+--- !u!65 &2025506433
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025506431}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &2033537677 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1085006760764378478, guid: 8ae1d01783978744bb5be07c83974a47, type: 3}
@@ -7187,3 +7733,5 @@ SceneRoots:
   - {fileID: 412266198}
   - {fileID: 1031112972}
   - {fileID: 531545735}
+  - {fileID: 332028010}
+  - {fileID: 1389356788}

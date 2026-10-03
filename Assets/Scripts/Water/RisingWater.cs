@@ -75,6 +75,7 @@ public class RisingWater : MonoBehaviour
     public void ResetMe(float yPosition)
     {
         isRisingToCheckpoint = false;
+        allowedToMove = false;
 
         // water is reset at the level of the checkpoint
         Vector3 pos = transform.position;

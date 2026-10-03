@@ -12,8 +12,13 @@ public class Checkpoint : MonoBehaviour
     [SerializeField] private RisingWater water;
     [SerializeField] private float waterOffsetBelowCheckpoint = 2.5f;
     [SerializeField] private float waterRiseSpeed = 3f; // For moving the water to the checkpoint
+
+    private bool hasBeenActivated = false;
     private void OnTriggerEnter(Collider other)
     {
+        // Thank you for finding this bug Cass.
+        if (hasBeenActivated) return;
+
         // Ensure your player has the "Player" tag in the Inspector
         if (other.CompareTag("Player"))
         {
@@ -38,6 +43,7 @@ public class Checkpoint : MonoBehaviour
                     water.RiseToCheckpoint(targetWaterLevel, waterRiseSpeed);
                 }
 
+                hasBeenActivated = true;
             }
         }
     }
